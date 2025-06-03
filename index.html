@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Project page for Fix False Transparency by Noise Guided Splatting (NGS), a method to reduce 'false transparency' artifacts in 3D Gaussian Splatting using injected noise Gaussians.">
+  <meta name="keywords" content="Fix False Transparency, Noise Guided Splatting, 3DGS, False Transparency, Neural Rendering, View Inconsistency, 3D Reconstruction">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fix False Transparency by Noise Guided Splatting</title>
+
+  <!-- TODO: Replace G-YOUR_ANALYTICS_ID with your own Google Analytics ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YOUR_ANALYTICS_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    // TODO: Replace G-YOUR_ANALYTICS_ID with your own Google Analytics ID
+    gtag('config', 'G-YOUR_ANALYTICS_ID');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      function openModal($el) {
+        $el.classList.add('is-active');
+      }
+      function closeModal($el) {
+        $el.classList.remove('is-active');
+      }
+      function closeAllModals() {
+        (document.querySelectorAll('.modal') || []).forEach(($modal) => {
+          closeModal($modal);
+        });
+      }
+      (document.querySelectorAll('.js-modal-trigger') || []).forEach(($trigger) => {
+        const modal = $trigger.dataset.target;
+        const $target = document.getElementById(modal);
+        $trigger.addEventListener('click', () => {
+          openModal($target);
+        });
+      });
+      (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button') || []).forEach(($close) => {
+        const $target = $close.closest('.modal');
+        $close.addEventListener('click', () => {
+          closeModal($target);
+        });
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.code === 'Escape') {
+          closeAllModals();
+        }
+      });
+    });
+  </script>
+  <style>
+    .table-container {
+      overflow-x: auto; /* Allows table to scroll horizontally on small screens */
+      margin-bottom: 1rem;
+    }
+    table.table { /* Bulma table styling */
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    table.table th, table.table td {
+      text-align: center; /* Center align all table content */
+      vertical-align: middle;
+    }
+    table.table th {
+      text-align: center !important; /* Ensure headers are centered, overriding Bulma defaults */
+    }
+    table.table strong { /* Ensure bolding is consistent */
+        font-weight: bold;
+    }
+    /* Styles for thumbnail carousels */
+    .thumbnail-box { cursor: pointer; padding: 0.5rem; transition: transform 0.2s; height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; box-sizing: border-box; }
+    .thumbnail-box:hover { transform: scale(1.05); }
+    .thumbnail-box img { width: 100%; max-height: 100px; object-fit: contain; border-radius: 4px; margin-bottom: 0.5rem; }
+    .thumbnail-box p { font-size: 0.8rem; text-align: center; margin-top: 0.5rem; }
+    .carousel { margin-top: 1rem; overflow: hidden; } /* Generic carousel style */
+    .carousel .carousel-item { padding: 0 5px; box-sizing: border-box; }
+  </style>
+</head>
+<body>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">Fix False Transparency by Noise Guided Splatting</h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="mailto:aly@opsiclear.com">Aly El Hakie</a><sup>1</sup>,</span>
+              <span class="author-block">
+                <a href="https://yiren-lu.com/">Yiren Lu</a><sup>2</sup>,</span>
+              <span class="author-block">
+                <a href="https://yin-yu.github.io/">Yu Yin</a><sup>2</sup>,</span>
+              <span class="author-block">
+                <!-- TODO: Confirm Michael Jenkins' link if available, used mailto as placeholder -->
+                <a href="mailto:michael.jenkins@opsiclear.com">Michael Jenkins</a><sup>1,2</sup>,</span>
+              <span class="author-block">
+                <a href="https://www.yeheliu.info/">Yehe Liu</a><sup>1,2</sup></span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>OpsiClear</span>
+              <span class="author-block"><sup>2</sup>Case Western Reserve University</span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <span class="link-block">
+                  <!-- TODO: Link to your PDF -->
+                  <a href="YOUR_ACTUAL_LINK_TO_PAPER.pdf"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <!-- TODO: Link to your arXiv page -->
+                  <a href="YOUR_ARXIV_LINK"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="ai ai-arxiv"></i></span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <!-- TODO: Link to your video -->
+                  <a href="YOUR_VIDEO_LINK"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fab fa-youtube"></i></span>
+                    <span>Video</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <!-- TODO: Link to your code repository -->
+                  <a href="YOUR_CODE_REPO_LINK"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>Code</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <!-- TODO: Link to your dataset -->
+                  <a href="YOUR_DATASET_LINK"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="far fa-images"></i></span>
+                    <span>Data</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-12">
+          <h2 class="title is-3 has-text-centered">Interactive 3D Comparison</h2>
+          <p class="content has-text-justified" style="margin-bottom: 1rem;">
+            Explore the visual impact of Noise Guided Splatting (NGS). The 2x2 grid below shows:
+            Top-left: Standard <strong>3DGS</strong> (no infill). Top-right: <strong>3DGS with green infill</strong> to reveal false transparency.
+            Bottom-left: Our <strong>NGS result (no infill)</strong>. Bottom-right: Our <strong>NGS result with green infill</strong>, showing reduced transparency.
+            Use the thumbnails to switch between different models.
+          </p>
+          <!-- Main 2x2 3D viewers -->
+          <div class="columns is-multiline is-vcentered" style="margin-bottom: 2rem;">
+            <!-- Row 1 -->
+            <div class="column is-6">
+              <div class="content has-text-centered"><p><strong>3DGS (No Infill)</strong></p></div>
+              <div class="box" style="height: 300px;">
+                <!-- TODO: Update src for 3DGS model without infill -->
+                <iframe id="main-viewer-1" src="./static/3d/stone_1_3dgs.html" style="width: 100%; height: 100%; border: none;"></iframe>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="content has-text-centered"><p><strong>3DGS (With Green Infill)</strong></p></div>
+              <div class="box" style="height: 300px;">
+                <!-- TODO: Update src for 3DGS model with infill -->
+                <iframe id="main-viewer-2" src="./static/3d/stone_1_3dgs_infill.html" style="width: 100%; height: 100%; border: none;"></iframe>
+              </div>
+            </div>
+            <!-- Row 2 -->
+            <div class="column is-6">
+              <div class="content has-text-centered"><p><strong>Ours (NGS, No Infill)</strong></p></div>
+              <div class="box" style="height: 300px;">
+                <!-- TODO: Update src for NGS model without infill -->
+                <iframe id="main-viewer-3" src="./static/3d/stone_1_ngs.html" style="width: 100%; height: 100%; border: none;"></iframe>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="content has-text-centered"><p><strong>Ours (NGS, With Green Infill)</strong></p></div>
+              <div class="box" style="height: 300px;">
+                <!-- TODO: Update src for NGS model with infill -->
+                <iframe id="main-viewer-4" src="./static/3d/stone_1_ngs_infill.html" style="width: 100%; height: 100%; border: none;"></iframe>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thumbnail carousel for the 2x2 viewer -->
+          <!-- TODO: Update onclick to load_correct_FOUR_HTML files for the 2x2 viewers -->
+          <!-- TODO: Update img src to actual thumbnail images -->
+          <div id="comparison-thumbnail-carousel" class="carousel">
+            <div class="carousel-item thumbnail-box" onclick="loadViewers('./static/3d/stone_1_3dgs.html', './static/3d/stone_1_3dgs_infill.html', './static/3d/stone_1_ngs.html', './static/3d/stone_1_ngs_infill.html')">
+              <img src="./static/thumbnails/stone_1.png" alt="Stone 1 Comparison Set">
+              <p>Stone 1</p>
+            </div>
+            <div class="carousel-item thumbnail-box" onclick="loadViewers('./static/3d/stone_2_3dgs.html', './static/3d/stone_2_3dgs_infill.html', './static/3d/stone_2_ngs.html', './static/3d/stone_2_ngs_infill.html')">
+              <img src="./static/thumbnails/stone_2.png" alt="Stone 2 Comparison Set">
+              <p>Stone 2</p>
+            </div>
+            <div class="carousel-item thumbnail-box" onclick="loadViewers('./static/3d/antique_004_3dgs.html', './static/3d/antique_004_3dgs_infill.html', './static/3d/antique_004_ngs.html', './static/3d/antique_004_ngs_infill.html')">
+              <img src="./static/thumbnails/antique_004.png" alt="Antique Comparison Set">
+              <p>Antique</p>
+            </div>
+            <div class="carousel-item thumbnail-box" onclick="loadViewers('./static/3d/dinosaur_002_3dgs.html', './static/3d/dinosaur_002_3dgs_infill.html', './static/3d/dinosaur_002_ngs.html', './static/3d/dinosaur_002_ngs_infill.html')">
+              <img src="./static/thumbnails/dinosaur_002.png" alt="Dinosaur Comparison Set">
+              <p>Dinosaur</p>
+            </div>
+            <div class="carousel-item thumbnail-box" onclick="loadViewers('./static/3d/scan106_3dgs.html', './static/3d/scan106_3dgs_infill.html', './static/3d/scan106_ngs.html', './static/3d/scan106_ngs_infill.html')">
+              <img src="./static/thumbnails/scan106.png" alt="Scan 106 Comparison Set">
+              <p>Scan 106</p>
+            </div>
+            <div class="carousel-item thumbnail-box" onclick="loadViewers('./static/3d/scan114_3dgs.html', './static/3d/scan114_3dgs_infill.html', './static/3d/scan114_ngs.html', './static/3d/scan114_ngs_infill.html')">
+              <img src="./static/thumbnails/scan114.png" alt="Scan 114 Comparison Set">
+              <p>Scan 114</p>
+            </div>
+          </div>
+          <script>
+            // Function to load all four viewers for comparison
+            function loadViewers(url1, url2, url3, url4) {
+              document.getElementById('main-viewer-1').src = url1;
+              document.getElementById('main-viewer-2').src = url2;
+              document.getElementById('main-viewer-3').src = url3;
+              document.getElementById('main-viewer-4').src = url4;
+            }
+            // Function to load the single infill viewer in Datasets section
+            function loadInfillViewer(infillUrl) {
+                if (document.getElementById('infill-viewer-main')) { // Check if the element exists
+                    document.getElementById('infill-viewer-main').src = infillUrl;
+                }
+            }
+            document.addEventListener('DOMContentLoaded', function() {
+              if (document.getElementById('comparison-thumbnail-carousel')) {
+                bulmaCarousel.attach('#comparison-thumbnail-carousel', {
+                  slidesToScroll: 1,
+                  slidesToShow: 3, 
+                  loop: true,
+                  autoplay: false,
+                  navigation: true,
+                  navigationKeys: true,
+                  infinite: true,
+                });
+              }
+              if (document.getElementById('infill-thumbnail-carousel')) {
+                bulmaCarousel.attach('#infill-thumbnail-carousel', {
+                  slidesToScroll: 1,
+                  slidesToShow: 3,
+                  loop: true,
+                  autoplay: false,
+                  navigation: true,
+                  navigationKeys: true,
+                  infinite: true,
+                });
+              }
+            });
+          </script>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              3D Gaussian Splatting (3DGS) has demonstrated impressive capabilities in 3D reconstruction. However, its α-blending can induce 'false transparency' artifacts, particularly where low point cloud density in sparse or low-texture regions causes foreground objects to appear improperly transparent. This issue stems from an ill-posed optimization. During training, background Gaussians blend with foreground ones, making them difficult to differentiate using only photometric loss, which leads to the observed transparency in these regions. This view-inconsistency issue is hard to detect in static renderings during training and validation, but becomes evident in object-centric reconstruction during interactive rotation. Although other causes of view-inconsistency (e.g., popping artifacts) have been explored recently, false transparency has not been explicitly identified. This paper proposes a novel explanation to the problem and a solution to remedy it by injecting opaque noise Gaussians in the object volume during training. Our strategy, Noise Guided Splatting (NGS), encourages surface Gaussians to adopt higher opacity while minimally modifying the existing splatting process. To quantitatively evaluate the false transparency in static renderings, we propose a transmittance-based metric to characterize the extent of the false transparency problem. We also introduce a customized high-quality object-centric scan dataset exhibiting prominent transparency issues and supplement popular existing datasets (e.g., DTU) with new complementary infill noise specifically designed to evaluate false transparency handling in 3D reconstruction methods. Across various datasets, NGS substantially reduces surface transmittance while maintaining performance on standard rendering metrics (e.g., PSNR), demonstrating its effectiveness.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="columns is-centered has-text-centered" style="margin-top: 2rem;">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Video Presentation</h2>
+          <div class="publication-video">
+            <!-- TODO: Replace with your video embed URL or local video file -->
+            <iframe src="YOUR_VIDEO_EMBED_URL"
+                    frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+            <!-- Or, if you have a local video file:
+            <video id="main-video" controls muted playsinline width="100%">
+              <source src="./static/videos/your_main_presentation.mp4" type="video/mp4">
+            </video>
+            -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column">
+          <div class="content">
+            <h2 class="title is-3">Methodology: Noise Guided Splatting (NGS)</h2>
+            <!-- TODO: Ensure 'summary.png' is Figure 1 from your paper and placed in ./static/figures/ -->
+            <img src="./static/figures/summary.png" alt="Overview of the NGS method (Figure 1 from paper)" class="interpolation-image" style="width:100%; border-radius: 8px; margin-bottom: 1rem;">
+            <p class="has-text-justified">
+              Overview of NGS (Noise Guided Splatting).
+              (a) Object-centric 3DGS render of a stone.
+              (b) Noise Gaussians are introduced into the object's volume during the training process. These noise Gaussians have fixed size/location, random color, and trainable opacity for pruning. Surface Gaussians are fixed during this noise optimization phase.
+              (c) Visible noise Gaussians that appear in front of surface Gaussians are removed during optimization, leaving subsurface noise filling the object.
+              (d) This noise infill can be recolored (e.g., to green) and saved for evaluating transparency in any splatting-based method.
+              (e) When the recolored infill is inserted into a vanilla 3DGS model, highly transparent regions on the surface become evident as the green infill "leaks" through.
+              (f) In contrast, the recolored infill does not leak through the surface of an NGS-trained model, demonstrating its improved opacity.
+            </p>
+             <p class="has-text-justified">
+              NGS addresses the false transparency by strategically placing these noise Gaussians within the object volume. This obstructs direct lines of sight between front and back surfaces, forcing the optimization to prioritize foreground surface reconstruction and achieve higher opacity. The method is designed as a plug-and-play add-on, requiring minimal modifications to existing 3DGS frameworks, primarily the introduction of noise Gaussians and an alpha consistency loss ($\mathcal{L}_a$). The noise initialization involves computing a convex hull from existing Gaussian primitives to approximate the object's volume, converting it to a coarse occupancy grid, and then populating it with multi-scale noise Gaussians.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Quantitative & Qualitative Results</h2>
+      <div class="content">
+        <h3 class="title is-4">Quantitative Evaluation</h3>
+        <p class="has-text-justified">
+          NGS substantially reduces surface transmittance while maintaining or improving performance on standard rendering metrics (PSNR, SSIM, LPIPS). We introduce the Surface Opacity Score (SOS), where a higher score (closer to 1) indicates better opacity. As shown in Table 1, NGS achieves significantly higher SOS values across the DTU, Stone, and OmniObject3D datasets compared to baseline 3DGS and other methods. When infill is used for evaluation (metrics with *), NGS maintains high PSNR*, SSIM*, and LPIPS* scores, indicating the infill does not leak through, unlike in baseline methods where these scores degrade.
+        </p>
+        <div class="table-container">
+          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+            <caption>Average NVS and SOS results on DTU, OmniObject3D and our novel Stone dataset. Metrics denoted by * were acquired when using a green infill, and +&alpha; denotes use of $\mathcal{L}_{a}$.</caption>
+            <thead>
+              <tr>
+                <th>Dataset</th>
+                <th>Method</th>
+                <th>PSNR&uarr;</th>
+                <th>PSNR*&uarr;</th>
+                <th>SSIM&uarr;</th>
+                <th>SSIM*&uarr;</th>
+                <th>LPIPS&darr;</th>
+                <th>LPIPS*&darr;</th>
+                <th>SOS&uarr;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td rowspan="5">DTU</td>
+                <td>3DGS</td><td>25.575</td><td>22.967</td><td><strong>0.891</strong></td><td>0.874</td><td>0.180</td><td>0.250</td><td>0.147</td>
+              </tr>
+              <tr>
+                <td>GOF</td><td><strong>25.648</strong></td><td>21.109</td><td>0.880</td><td>0.816</td><td>0.209</td><td>0.273</td><td>0.179</td>
+              </tr>
+              <tr>
+                <td>StopThePop</td><td>22.817</td><td>18.885</td><td>0.852</td><td>0.780</td><td>0.213</td><td>0.315</td><td>0.135</td>
+              </tr>
+              <tr>
+                <td>GSplat+&alpha;</td><td>24.874</td><td>21.929</td><td>0.883</td><td>0.866</td><td><strong>0.174</strong></td><td>0.237</td><td>0.154</td>
+              </tr>
+              <tr>
+                <td>NGS</td><td>24.963</td><td><strong>24.961</strong></td><td>0.886</td><td><strong>0.885</strong></td><td><strong>0.174</strong></td><td><strong>0.175</strong></td><td><strong>0.429</strong></td>
+              </tr>
+              <tr>
+                <td rowspan="5">Stone</td>
+                <td>3DGS</td><td><strong>34.610</strong></td><td>27.551</td><td><strong>0.949</strong></td><td>0.909</td><td><strong>0.055</strong></td><td>0.222</td><td>0.140</td>
+              </tr>
+              <tr>
+                <td>GOF</td><td>31.469</td><td>21.998</td><td>0.893</td><td>0.780</td><td>0.186</td><td>0.324</td><td>0.126</td>
+              </tr>
+              <tr>
+                <td>StopThePop</td><td>32.457</td><td>23.047</td><td>0.945</td><td>0.853</td><td>0.078</td><td>0.223</td><td>0.168</td>
+              </tr>
+              <tr>
+                <td>GSplat+&alpha;</td><td>32.177</td><td>30.176</td><td>0.935</td><td>0.927</td><td>0.140</td><td>0.191</td><td>0.217</td>
+              </tr>
+              <tr>
+                <td>NGS</td><td>33.531</td><td><strong>33.531</strong></td><td>0.948</td><td><strong>0.948</strong></td><td>0.059</td><td><strong>0.059</strong></td><td><strong>0.936</strong></td>
+              </tr>
+              <tr>
+                <td rowspan="5">OmniObject</td>
+                <td>3DGS</td><td>29.300</td><td>27.456</td><td>0.940</td><td>0.929</td><td>0.069</td><td>0.116</td><td>0.215</td>
+              </tr>
+              <tr>
+                <td>GOF</td><td>32.259</td><td>24.931</td><td>0.970</td><td>0.898</td><td>0.062</td><td>0.122</td><td>0.208</td>
+              </tr>
+              <tr>
+                <td>StopThePop</td><td>32.274</td><td>25.095</td><td>0.970</td><td><strong>0.900</strong></td><td><strong>0.050</strong></td><td>0.113</td><td>0.265</td>
+              </tr>
+              <tr>
+                <td>GSplat+&alpha;</td><td>31.617</td><td>30.635</td><td>0.966</td><td>0.961</td><td>0.061</td><td>0.087</td><td>0.323</td>
+              </tr>
+              <tr>
+                <td>NGS</td><td><strong>32.771</strong></td><td><strong>32.760</strong></td><td><strong>0.974</strong></td><td><strong>0.974</strong></td><td>0.055</td><td><strong>0.056</strong></td><td><strong>0.568</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="has-text-centered"><em>Table 1: Average NVS and SOS results. NGS shows strong improvements in SOS and infill-conditioned metrics (*).</em></p>
+
+        <h3 class="title is-4" style="margin-top: 2rem;">Qualitative Comparison</h3>
+        <p class="has-text-justified">
+          Visual comparisons highlight the effectiveness of NGS. Below, on our Stone dataset (Figure 5 from paper), green infill is used to reveal transparency. Baseline methods (a-d) show significant green leakage, indicating false transparency. Our NGS method (e) results in a much more opaque surface.
+        </p>
+        <!-- TODO: Replace with an image of Figure 5 or a relevant comparison, placed in ./static/figures/ -->
+        <img src="./static/figures/comparison.png" alt="Qualitative Comparison on Stone Dataset (Figure 5 from paper)" style="width:100%; border-radius: 8px; margin-bottom: 1rem; max-width: 800px; display: block; margin-left: auto; margin-right: auto;">
+        <p class="has-text-centered"><em>Comparison based on Figure 5 from paper: Renders with green infill revealing transparency (top) and corresponding transmittance maps (bottom) for (a) 3DGS, (b) MCMC, (c) GOF, (d) StopThePop, and (e) NGS. NGS (e) shows minimal green infill leakage.</em></p>
+        <p class="has-text-justified">
+          Similar improvements in reducing false transparency are observed on the DTU (see Figure S4 in paper appendix) and OmniObject3D (see Figure S5 in paper appendix) datasets.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Datasets</h2>
+      <div class="content has-text-justified">
+        <p>
+          We evaluate NGS on publicly available object-centric datasets, DTU and OmniObject3D, and also introduce our new <strong>Stone Dataset</strong> to specifically test scenarios with complex geometry and textures prone to false transparency.
+        </p>
+        <h4 class="title is-5">Stone Dataset</h4>
+        <p>
+          This dataset comprises over 100 distinct stone samples. For each sample, we captured 240 images ($3000 \times 4000$ pixels, 16-bit raw Bayer data) from 6 latitudinal and 40 longitudinal angles, covering the entire upper hemisphere. Camera poses were estimated using COLMAP, and high-quality foreground segmentations were produced using MVAnet.
+        </p>
+        <p>
+          Noise Gaussian infill add-ons were also created for existing datasets like DTU to facilitate benchmarking of false transparency handling. The Stone Dataset and the noise infills will be made publicly available. <!-- TODO: Link to dataset when available via the 'Data' button at the top -->
+        </p>
+        <div class="columns is-multiline is-centered" style="margin-top: 1rem;">
+          <div class="column is-one-third has-text-centered">
+            <!-- TODO: Replace with an image from Fig S1, placed in ./static/figures/ -->
+            <img src="./static/figures/stones_comparisons.jpg" alt="Stone Dataset Examples (from Fig. S1)" style="width:100%; border-radius: 8px;">
+            <p><em>Stone Dataset samples (based on Fig. S1).</em></p>
+          </div>
+          <div class="column is-one-third has-text-centered">
+            <!-- TODO: Replace with an image from Fig S2, placed in ./static/figures/ -->
+            <img src="./static/figures/dtu_360_comparisons.jpg" alt="DTU Dataset Examples (from Fig. S2)" style="width:100%; border-radius: 8px;">
+            <p><em>DTU samples (based on Fig. S2).</em></p>
+          </div>
+          <div class="column is-one-third has-text-centered">
+            <!-- TODO: Replace with an image from Fig S3, placed in ./static/figures/ -->
+            <img src="./static/figures/omniobject_comparisons.jpg" alt="OmniObject3D Examples (from Fig. S3)" style="width:100%; border-radius: 8px;">
+            <p><em>OmniObject3D samples (based on Fig. S3).</em></p>
+          </div>
+        </div>
+
+        <h3 class="title is-4 has-text-centered" style="margin-top: 3rem;">Noise Infill Visualization</h3>
+        <p class="content has-text-justified" style="margin-bottom: 1rem;">
+            The viewer below allows you to inspect the standalone noise infill generated by our NGS method for each model. This is the colored noise that helps enforce opacity and can be used as a diagnostic tool. Use the thumbnails to select a model.
+        </p>
+        <div class="columns is-centered">
+            <div class="column is-10"> <!-- Wider column for single viewer -->
+                <div class="box" style="height: 400px;">
+                    <!-- TODO: Update src for the initial noise infill model -->
+                    <iframe id="infill-viewer-main" src="./static/3d/stone_1_noise.html" style="width: 100%; height: 100%; border: none;"></iframe>
+                </div>
+            </div>
+        </div>
+        <!-- Thumbnail carousel for the noise infill viewer -->
+        <!-- TODO: Update onclick to load_correct_SINGLE_HTML file for the noise infill viewer -->
+        <!-- TODO: Update img src to actual thumbnail images -->
+        <div id="infill-thumbnail-carousel" class="carousel">
+            <div class="carousel-item thumbnail-box" onclick="loadInfillViewer('./static/3d/stone_1_noise.html')">
+              <img src="./static/thumbnails/stone_1.png" alt="Stone 1 Noise Infill">
+              <p>Stone 1</p>
+            </div>
+            <div class="carousel-item thumbnail-box" onclick="loadInfillViewer('./static/3d/stone_2_noise.html')">
+              <img src="./static/thumbnails/stone_2.png" alt="Stone 2 Noise Infill">
+              <p>Stone 2</p>
+            </div>
+            <div class="carousel-item thumbnail-box" onclick="loadInfillViewer('./static/3d/antique_004_noise.html')">
+              <img src="./static/thumbnails/antique_004.png" alt="Antique Noise Infill">
+              <p>Antique</p>
+            </div>
+            <div class="carousel-item thumbnail-box" onclick="loadInfillViewer('./static/3d/dinosaur_002_noise.html')">
+              <img src="./static/thumbnails/dinosaur_002.png" alt="Dinosaur Noise Infill">
+              <p>Dinosaur</p>
+            </div>
+            <div class="carousel-item thumbnail-box" onclick="loadInfillViewer('./static/3d/scan106_noise.html')">
+              <img src="./static/thumbnails/scan106.png" alt="Scan 106 Noise Infill">
+              <p>Scan 106</p>
+            </div>
+            <div class="carousel-item thumbnail-box" onclick="loadInfillViewer('./static/3d/scan114_noise.html')">
+              <img src="./static/thumbnails/scan114.png" alt="Scan 114 Noise Infill">
+              <p>Scan 114</p>
+            </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Ablation Study</h2>
+      <div class="content">
+        <p class="has-text-justified">
+          We conducted ablation experiments using our Stone dataset to isolate the effects of individual design choices in NGS on both rendering quality and transparency reduction. Key components like resetting the learning rate for Gaussian means after noise introduction and the foreground opacity loss ($\mathcal{L}_f$) proved particularly crucial for the method's effectiveness.
+        </p>
+        <div class="table-container">
+            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                <caption>Mean NVS and SOS scores over the Stone Dataset from ablation studies. Metrics denoted by * were acquired when using an infill.</caption>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>PSNR&uarr;</th>
+                        <th>PSNR*&uarr;</th>
+                        <th>SSIM&uarr;</th>
+                        <th>SSIM*&uarr;</th>
+                        <th>LPIPS&darr;</th>
+                        <th>LPIPS*&darr;</th>
+                        <th>SOS&uarr;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ours</td>
+                        <td>31.442</td>
+                        <td>31.440</td>
+                        <td>0.926</td>
+                        <td>0.926</td>
+                        <td>0.154</td>
+                        <td>0.154</td>
+                        <td>0.968</td>
+                    </tr>
+                    <tr>
+                        <td>w/o Erosion</td>
+                        <td>29.824</td>
+                        <td>29.824</td>
+                        <td>0.902</td>
+                        <td>0.902</td>
+                        <td>0.238</td>
+                        <td>0.238</td>
+                        <td><strong>1.000</strong></td>
+                    </tr>
+                    <tr>
+                        <td>w/o Pruning</td>
+                        <td>31.496</td>
+                        <td>31.489</td>
+                        <td>0.927</td>
+                        <td>0.927</td>
+                        <td>0.151</td>
+                        <td>0.151</td>
+                        <td>0.952</td>
+                    </tr>
+                    <tr>
+                        <td>w/o $\mathcal{L}_f$</td> <!-- Representing L_f -->
+                        <td>31.252</td>
+                        <td>30.930</td>
+                        <td><strong>0.928</strong></td>
+                        <td><strong>0.927</strong></td>
+                        <td><strong>0.126</strong></td>
+                        <td>0.135</td>
+                        <td>0.379</td>
+                    </tr>
+                    <tr>
+                        <td>w/o LR reset</td>
+                        <td>26.136</td>
+                        <td>26.133</td>
+                        <td>0.830</td>
+                        <td>0.830</td>
+                        <td>0.416</td>
+                        <td>0.416</td>
+                        <td>0.545</td>
+                    </tr>
+                    <tr>
+                        <td>Random Bg</td>
+                        <td>30.205</td>
+                        <td>30.149</td>
+                        <td>0.923</td>
+                        <td>0.923</td>
+                        <td>0.136</td>
+                        <td>0.139</td>
+                        <td>0.467</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="has-text-centered"><em>Table 2: Ablation study results on the Stone Dataset. The current NGS configuration achieves an optimal balance.</em></p>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@inproceedings{ElHakie2025NGS,
+    author    = {El Hakie, Aly and Lu, Yiren and Yin, Yu and Jenkins, Michael and Liu, Yehe},
+    title     = {Fix False Transparency by Noise Guided Splatting},
+    booktitle = {Conference on Neural Information Processing Systems (NeurIPS)},
+    year      = {2025}
+}</code></pre>
+      <!-- TODO: Update BibTeX if conference/journal or year changes upon publication. Add arXiv @misc if applicable. -->
+      <p><em>Note: Please update the BibTeX entry if conference details (e.g., NeurIPS track, specific proceedings name) or year change upon publication. If you post to arXiv, consider adding an @misc entry for that as well.</em></p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <!-- TODO: Link to your PDF -->
+        <a class="icon-link"
+           href="YOUR_ACTUAL_LINK_TO_PAPER.pdf">
+           <i class="fas fa-file-pdf"></i>
+        </a>
+        <!-- TODO: Link to your GitHub repo -->
+        <a class="icon-link" href="YOUR_CODE_REPO_LINK" class="external-link">
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This website template is adapted from the <a href="https://nerfies.github.io" target="_blank">Nerfies project page</a>
+              and is licensed under a <a rel="license"
+                                         href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+              Commons Attribution-ShareAlike 4.0 International License</a>.
+              You are free to borrow the source code of this website,
+              we just ask that you link back to the original Nerfies page and this adapted template in your footer.
+            </p>
+            <p>
+              <!-- TODO: Remember to replace or remove the Google Analytics code included in the header of the website. -->
+              Please remember to replace or remove the Google Analytics code included in the header of the website.
+            </p>
+            <p>
+              <!-- TODO: Update funding source/grant number and individuals/groups if applicable. -->
+              Acknowledgements: This work was supported by [Funding Source/Grant Number if applicable]. We thank [Individuals/Groups if applicable] for helpful discussions.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
