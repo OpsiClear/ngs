@@ -36,10 +36,6 @@
   <script src="./static/js/fontawesome.all.min.js"></script>
   <script src="./static/js/bulma-carousel.min.js"></script>
   <script src="./static/js/bulma-slider.min.js"></script>
-  <script src="./static/js/index.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       function openModal($el) {
@@ -195,30 +191,26 @@
             <div class="column is-6">
               <div class="content has-text-centered"><p><strong>3DGS (No Infill)</strong></p></div>
               <div class="box" style="height: 300px;">
-                <!-- TODO: Update src for 3DGS model without infill -->
-                <iframe id="main-viewer-1" src="./static/3d/stone_1_3dgs.html" style="width: 100%; height: 100%; border: none;"></iframe>
+                <canvas id="main-viewer-1" style="width: 100%; height: 100%;"></canvas>
               </div>
             </div>
             <div class="column is-6">
               <div class="content has-text-centered"><p><strong>3DGS (With Green Infill)</strong></p></div>
               <div class="box" style="height: 300px;">
-                <!-- TODO: Update src for 3DGS model with infill -->
-                <iframe id="main-viewer-2" src="./static/3d/stone_1_3dgs_infill.html" style="width: 100%; height: 100%; border: none;"></iframe>
+                <canvas id="main-viewer-2" style="width: 100%; height: 100%;"></canvas>
               </div>
             </div>
             <!-- Row 2 -->
             <div class="column is-6">
               <div class="content has-text-centered"><p><strong>Ours (NGS, No Infill)</strong></p></div>
               <div class="box" style="height: 300px;">
-                <!-- TODO: Update src for NGS model without infill -->
-                <iframe id="main-viewer-3" src="./static/3d/stone_1_ngs.html" style="width: 100%; height: 100%; border: none;"></iframe>
+                <canvas id="main-viewer-3" style="width: 100%; height: 100%;"></canvas>
               </div>
             </div>
             <div class="column is-6">
               <div class="content has-text-centered"><p><strong>Ours (NGS, With Green Infill)</strong></p></div>
               <div class="box" style="height: 300px;">
-                <!-- TODO: Update src for NGS model with infill -->
-                <iframe id="main-viewer-4" src="./static/3d/stone_1_ngs_infill.html" style="width: 100%; height: 100%; border: none;"></iframe>
+                <canvas id="main-viewer-4" style="width: 100%; height: 100%;"></canvas>
               </div>
             </div>
           </div>
@@ -227,70 +219,31 @@
           <!-- TODO: Update onclick to load_correct_FOUR_HTML files for the 2x2 viewers -->
           <!-- TODO: Update img src to actual thumbnail images -->
           <div id="comparison-thumbnail-carousel" class="carousel">
-            <div class="carousel-item thumbnail-box" onclick="loadViewers('./static/3d/stone_1_3dgs.html', './static/3d/stone_1_3dgs_infill.html', './static/3d/stone_1_ngs.html', './static/3d/stone_1_ngs_infill.html')">
+            <div class="carousel-item thumbnail-box" onclick="updateComparisonViewers('stone_1')">
               <img src="./static/thumbnails/stone_1.png" alt="Stone 1 Comparison Set">
               <p>Stone 1</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="loadViewers('./static/3d/stone_2_3dgs.html', './static/3d/stone_2_3dgs_infill.html', './static/3d/stone_2_ngs.html', './static/3d/stone_2_ngs_infill.html')">
+            <div class="carousel-item thumbnail-box" onclick="updateComparisonViewers('stone_2')">
               <img src="./static/thumbnails/stone_2.png" alt="Stone 2 Comparison Set">
               <p>Stone 2</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="loadViewers('./static/3d/antique_004_3dgs.html', './static/3d/antique_004_3dgs_infill.html', './static/3d/antique_004_ngs.html', './static/3d/antique_004_ngs_infill.html')">
+            <div class="carousel-item thumbnail-box" onclick="updateComparisonViewers('antique_004')">
               <img src="./static/thumbnails/antique_004.png" alt="Antique Comparison Set">
               <p>Antique</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="loadViewers('./static/3d/dinosaur_002_3dgs.html', './static/3d/dinosaur_002_3dgs_infill.html', './static/3d/dinosaur_002_ngs.html', './static/3d/dinosaur_002_ngs_infill.html')">
+            <div class="carousel-item thumbnail-box" onclick="updateComparisonViewers('dinosaur_002')">
               <img src="./static/thumbnails/dinosaur_002.png" alt="Dinosaur Comparison Set">
               <p>Dinosaur</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="loadViewers('./static/3d/scan106_3dgs.html', './static/3d/scan106_3dgs_infill.html', './static/3d/scan106_ngs.html', './static/3d/scan106_ngs_infill.html')">
+            <div class="carousel-item thumbnail-box" onclick="updateComparisonViewers('scan106')">
               <img src="./static/thumbnails/scan106.png" alt="Scan 106 Comparison Set">
               <p>Scan 106</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="loadViewers('./static/3d/scan114_3dgs.html', './static/3d/scan114_3dgs_infill.html', './static/3d/scan114_ngs.html', './static/3d/scan114_ngs_infill.html')">
+            <div class="carousel-item thumbnail-box" onclick="updateComparisonViewers('scan114')">
               <img src="./static/thumbnails/scan114.png" alt="Scan 114 Comparison Set">
               <p>Scan 114</p>
             </div>
           </div>
-          <script>
-            // Function to load all four viewers for comparison
-            function loadViewers(url1, url2, url3, url4) {
-              document.getElementById('main-viewer-1').src = url1;
-              document.getElementById('main-viewer-2').src = url2;
-              document.getElementById('main-viewer-3').src = url3;
-              document.getElementById('main-viewer-4').src = url4;
-            }
-            // Function to load the single infill viewer in Datasets section
-            function loadInfillViewer(infillUrl) {
-                if (document.getElementById('infill-viewer-main')) { // Check if the element exists
-                    document.getElementById('infill-viewer-main').src = infillUrl;
-                }
-            }
-            document.addEventListener('DOMContentLoaded', function() {
-              if (document.getElementById('comparison-thumbnail-carousel')) {
-                bulmaCarousel.attach('#comparison-thumbnail-carousel', {
-                  slidesToScroll: 1,
-                  slidesToShow: 3, 
-                  loop: true,
-                  autoplay: false,
-                  navigation: true,
-                  navigationKeys: true,
-                  infinite: true,
-                });
-              }
-              if (document.getElementById('infill-thumbnail-carousel')) {
-                bulmaCarousel.attach('#infill-thumbnail-carousel', {
-                  slidesToScroll: 1,
-                  slidesToShow: 3,
-                  loop: true,
-                  autoplay: false,
-                  navigation: true,
-                  navigationKeys: true,
-                  infinite: true,
-                });
-              }
-            });
-          </script>
         </div>
       </div>
     </div>
@@ -485,7 +438,7 @@
             <div class="column is-10"> <!-- Wider column for single viewer -->
                 <div class="box" style="height: 400px;">
                     <!-- TODO: Update src for the initial noise infill model -->
-                    <iframe id="infill-viewer-main" src="./static/3d/stone_1_noise.html" style="width: 100%; height: 100%; border: none;"></iframe>
+                    <canvas id="infill-viewer-main" style="width: 100%; height: 100%;"></canvas>
                 </div>
             </div>
         </div>
@@ -493,27 +446,27 @@
         <!-- TODO: Update onclick to load_correct_SINGLE_HTML file for the noise infill viewer -->
         <!-- TODO: Update img src to actual thumbnail images -->
         <div id="infill-thumbnail-carousel" class="carousel">
-            <div class="carousel-item thumbnail-box" onclick="loadInfillViewer('./static/3d/stone_1_noise.html')">
+            <div class="carousel-item thumbnail-box" onclick="updateInfillViewer('stone_1')">
               <img src="./static/thumbnails/stone_1.png" alt="Stone 1 Noise Infill">
               <p>Stone 1</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="loadInfillViewer('./static/3d/stone_2_noise.html')">
+            <div class="carousel-item thumbnail-box" onclick="updateInfillViewer('stone_2')">
               <img src="./static/thumbnails/stone_2.png" alt="Stone 2 Noise Infill">
               <p>Stone 2</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="loadInfillViewer('./static/3d/antique_004_noise.html')">
+            <div class="carousel-item thumbnail-box" onclick="updateInfillViewer('antique_004')">
               <img src="./static/thumbnails/antique_004.png" alt="Antique Noise Infill">
               <p>Antique</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="loadInfillViewer('./static/3d/dinosaur_002_noise.html')">
+            <div class="carousel-item thumbnail-box" onclick="updateInfillViewer('dinosaur_002')">
               <img src="./static/thumbnails/dinosaur_002.png" alt="Dinosaur Noise Infill">
               <p>Dinosaur</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="loadInfillViewer('./static/3d/scan106_noise.html')">
+            <div class="carousel-item thumbnail-box" onclick="updateInfillViewer('scan106')">
               <img src="./static/thumbnails/scan106.png" alt="Scan 106 Noise Infill">
               <p>Scan 106</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="loadInfillViewer('./static/3d/scan114_noise.html')">
+            <div class="carousel-item thumbnail-box" onclick="updateInfillViewer('scan114')">
               <img src="./static/thumbnails/scan114.png" alt="Scan 114 Noise Infill">
               <p>Scan 114</p>
             </div>
@@ -665,5 +618,9 @@
       </div>
     </div>
   </footer>
+
+<script src="./static/js/index.js"></script> 
+<script type="module" src="./static/js/viewer.js"></script>
+
 </body>
 </html>
