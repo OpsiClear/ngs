@@ -95,6 +95,14 @@
     .thumbnail-box p { font-size: 0.8rem; text-align: center; margin-top: 0.5rem; }
     .carousel { margin-top: 1rem; overflow: hidden; } /* Generic carousel style */
     .carousel .carousel-item { padding: 0 5px; box-sizing: border-box; }
+    .box {
+      box-shadow: none;
+      padding: 0;
+      border-radius: 0;
+    }
+    canvas {
+      background-color: #ffffff;
+    }
   </style>
 </head>
 <body>
@@ -177,6 +185,55 @@
   <section class="section">
     <div class="container is-max-desktop">
       <div class="columns is-centered">
+        <div class="column is-four-fifths">
+          <div class="content has-text-centered">
+            <h2 class="title is-3">False Transparency</h2>
+            <p class="content has-text-justified" style="margin-bottom: 1rem;">
+                False transparency is a common issue in 3DGS, where the reconstructed surface appears transparent even though it should be opaque.
+            </p>
+          </div>
+          <div class="box" style="height: 500px;">
+            <canvas id="teaser-viewer" style="width: 100%; height: 100%;"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              3D Gaussian Splatting (3DGS) has demonstrated impressive capabilities in 3D reconstruction. However, its α-blending can induce 'false transparency' artifacts, particularly where low point cloud density in sparse or low-texture regions causes foreground objects to appear improperly transparent. This issue stems from an ill-posed optimization. During training, background Gaussians blend with foreground ones, making them difficult to differentiate using only photometric loss, which leads to the observed transparency in these regions. This view-inconsistency issue is hard to detect in static renderings during training and validation, but becomes evident in object-centric reconstruction during interactive rotation. Although other causes of view-inconsistency (e.g., popping artifacts) have been explored recently, false transparency has not been explicitly identified. This paper proposes a novel explanation to the problem and a solution to remedy it by injecting opaque noise Gaussians in the object volume during training. Our strategy, Noise Guided Splatting (NGS), encourages surface Gaussians to adopt higher opacity while minimally modifying the existing splatting process. To quantitatively evaluate the false transparency in static renderings, we propose a transmittance-based metric to characterize the extent of the false transparency problem. We also introduce a customized high-quality object-centric scan dataset exhibiting prominent transparency issues and supplement popular existing datasets (e.g., DTU) with new complementary infill noise specifically designed to evaluate false transparency handling in 3D reconstruction methods. Across various datasets, NGS substantially reduces surface transmittance while maintaining performance on standard rendering metrics (e.g., PSNR), demonstrating its effectiveness.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="columns is-centered has-text-centered" style="margin-top: 2rem;">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Video Presentation</h2>
+          <div class="publication-video">
+            <!-- TODO: Replace with your video embed URL or local video file -->
+            <iframe src="YOUR_VIDEO_EMBED_URL"
+                    frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+            <!-- Or, if you have a local video file:
+            <video id="main-video" controls muted playsinline width="100%">
+              <source src="./static/videos/your_main_presentation.mp4" type="video/mp4">
+            </video>
+            -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
         <div class="column is-12">
           <h2 class="title is-3 has-text-centered">Interactive 3D Comparison</h2>
           <p class="content has-text-justified" style="margin-bottom: 1rem;">
@@ -219,61 +276,30 @@
           <!-- TODO: Update onclick to load_correct_FOUR_HTML files for the 2x2 viewers -->
           <!-- TODO: Update img src to actual thumbnail images -->
           <div id="comparison-thumbnail-carousel" class="carousel">
-            <div class="carousel-item thumbnail-box" onclick="updateComparisonViewers('stone_1')">
+            <div class="carousel-item thumbnail-box" data-model="stone_1" onclick="updateComparisonViewers('stone_1')">
               <img src="./static/thumbnails/stone_1.png" alt="Stone 1 Comparison Set">
               <p>Stone 1</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="updateComparisonViewers('stone_2')">
+            <div class="carousel-item thumbnail-box" data-model="stone_2" onclick="updateComparisonViewers('stone_2')">
               <img src="./static/thumbnails/stone_2.png" alt="Stone 2 Comparison Set">
               <p>Stone 2</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="updateComparisonViewers('antique_004')">
+            <div class="carousel-item thumbnail-box" data-model="antique_004" onclick="updateComparisonViewers('antique_004')">
               <img src="./static/thumbnails/antique_004.png" alt="Antique Comparison Set">
               <p>Antique</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="updateComparisonViewers('dinosaur_002')">
+            <div class="carousel-item thumbnail-box" data-model="dinosaur_002" onclick="updateComparisonViewers('dinosaur_002')">
               <img src="./static/thumbnails/dinosaur_002.png" alt="Dinosaur Comparison Set">
               <p>Dinosaur</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="updateComparisonViewers('scan106')">
+            <div class="carousel-item thumbnail-box" data-model="scan106" onclick="updateComparisonViewers('scan106')">
               <img src="./static/thumbnails/scan106.png" alt="Scan 106 Comparison Set">
               <p>Scan 106</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="updateComparisonViewers('scan114')">
+            <div class="carousel-item thumbnail-box" data-model="scan114" onclick="updateComparisonViewers('scan114')">
               <img src="./static/thumbnails/scan114.png" alt="Scan 114 Comparison Set">
               <p>Scan 114</p>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Abstract</h2>
-          <div class="content has-text-justified">
-            <p>
-              3D Gaussian Splatting (3DGS) has demonstrated impressive capabilities in 3D reconstruction. However, its α-blending can induce 'false transparency' artifacts, particularly where low point cloud density in sparse or low-texture regions causes foreground objects to appear improperly transparent. This issue stems from an ill-posed optimization. During training, background Gaussians blend with foreground ones, making them difficult to differentiate using only photometric loss, which leads to the observed transparency in these regions. This view-inconsistency issue is hard to detect in static renderings during training and validation, but becomes evident in object-centric reconstruction during interactive rotation. Although other causes of view-inconsistency (e.g., popping artifacts) have been explored recently, false transparency has not been explicitly identified. This paper proposes a novel explanation to the problem and a solution to remedy it by injecting opaque noise Gaussians in the object volume during training. Our strategy, Noise Guided Splatting (NGS), encourages surface Gaussians to adopt higher opacity while minimally modifying the existing splatting process. To quantitatively evaluate the false transparency in static renderings, we propose a transmittance-based metric to characterize the extent of the false transparency problem. We also introduce a customized high-quality object-centric scan dataset exhibiting prominent transparency issues and supplement popular existing datasets (e.g., DTU) with new complementary infill noise specifically designed to evaluate false transparency handling in 3D reconstruction methods. Across various datasets, NGS substantially reduces surface transmittance while maintaining performance on standard rendering metrics (e.g., PSNR), demonstrating its effectiveness.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="columns is-centered has-text-centered" style="margin-top: 2rem;">
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Video Presentation</h2>
-          <div class="publication-video">
-            <!-- TODO: Replace with your video embed URL or local video file -->
-            <iframe src="YOUR_VIDEO_EMBED_URL"
-                    frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
-            <!-- Or, if you have a local video file:
-            <video id="main-video" controls muted playsinline width="100%">
-              <source src="./static/videos/your_main_presentation.mp4" type="video/mp4">
-            </video>
-            -->
           </div>
         </div>
       </div>
@@ -446,27 +472,27 @@
         <!-- TODO: Update onclick to load_correct_SINGLE_HTML file for the noise infill viewer -->
         <!-- TODO: Update img src to actual thumbnail images -->
         <div id="infill-thumbnail-carousel" class="carousel">
-            <div class="carousel-item thumbnail-box" onclick="updateInfillViewer('stone_1')">
+            <div class="carousel-item thumbnail-box" data-model="stone_1" onclick="updateInfillViewer('stone_1')">
               <img src="./static/thumbnails/stone_1.png" alt="Stone 1 Noise Infill">
               <p>Stone 1</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="updateInfillViewer('stone_2')">
+            <div class="carousel-item thumbnail-box" data-model="stone_2" onclick="updateInfillViewer('stone_2')">
               <img src="./static/thumbnails/stone_2.png" alt="Stone 2 Noise Infill">
               <p>Stone 2</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="updateInfillViewer('antique_004')">
+            <div class="carousel-item thumbnail-box" data-model="antique_004" onclick="updateInfillViewer('antique_004')">
               <img src="./static/thumbnails/antique_004.png" alt="Antique Noise Infill">
               <p>Antique</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="updateInfillViewer('dinosaur_002')">
+            <div class="carousel-item thumbnail-box" data-model="dinosaur_002" onclick="updateInfillViewer('dinosaur_002')">
               <img src="./static/thumbnails/dinosaur_002.png" alt="Dinosaur Noise Infill">
               <p>Dinosaur</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="updateInfillViewer('scan106')">
+            <div class="carousel-item thumbnail-box" data-model="scan106" onclick="updateInfillViewer('scan106')">
               <img src="./static/thumbnails/scan106.png" alt="Scan 106 Noise Infill">
               <p>Scan 106</p>
             </div>
-            <div class="carousel-item thumbnail-box" onclick="updateInfillViewer('scan114')">
+            <div class="carousel-item thumbnail-box" data-model="scan114" onclick="updateInfillViewer('scan114')">
               <img src="./static/thumbnails/scan114.png" alt="Scan 114 Noise Infill">
               <p>Scan 114</p>
             </div>

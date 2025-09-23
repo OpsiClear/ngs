@@ -23,7 +23,6 @@ class OrbitControls {
         alpha = 0.5,
         beta = 0.5,
         radius = 5,
-        enableKeyboardControls = true,
         inputTarget = new Vector3()
     ) {
         let target = inputTarget.clone()
@@ -33,15 +32,34 @@ class OrbitControls {
         let desiredBeta = beta
         let desiredRadius = radius
 
+        this.transitionResolver = null;
+
         let dragging = false
         let panning = false
         let lastDist = 0
         let lastX = 0
         let lastY = 0
 
-        const keys = {}
-
         let isUpdatingCamera = false
+
+        // --- NEW: getState and setState methods for synchronization ---
+        this.getState = () => {
+            return {
+                alpha, beta, radius, target,
+                desiredAlpha, desiredBeta, desiredRadius, desiredTarget
+            };
+        };
+        this.setState = (state) => {
+            alpha = state.alpha;
+            beta = state.beta;
+            radius = state.radius;
+            target = state.target;
+            desiredAlpha = state.desiredAlpha;
+            desiredBeta = state.desiredBeta;
+            desiredRadius = state.desiredRadius;
+            desiredTarget = state.desiredTarget;
+        };
+        // --- END NEW ---
 
         const onCameraChange = () => {
             if (isUpdatingCamera) return
@@ -79,28 +97,23 @@ class OrbitControls {
             deltaBeta += deltaBeta;
         }
 
+        this.setPose = (alpha, beta, radius, smooth = false) => {
+            desiredAlpha = alpha;
+            desiredBeta = beta;
+            desiredRadius = radius;
+            
+            if (smooth) {
+                return new Promise((resolve) => {
+                    this.transitionResolver = resolve;
+                });
+            }
+        };
+
         const computeZoomNorm = () => {
             return (
                 0.1 +
                 (0.9 * (desiredRadius - this.minZoom)) / (this.maxZoom - this.minZoom)
             )
-        }
-
-        const onKeyDown = e => {
-            keys[e.code] = true
-            // Map arrow keys to WASD keys
-            if (e.code === "ArrowUp") keys["KeyW"] = true
-            if (e.code === "ArrowDown") keys["KeyS"] = true
-            if (e.code === "ArrowLeft") keys["KeyA"] = true
-            if (e.code === "ArrowRight") keys["KeyD"] = true
-        }
-
-        const onKeyUp = e => {
-            keys[e.code] = false // Map arrow keys to WASD keys
-            if (e.code === "ArrowUp") keys["KeyW"] = false
-            if (e.code === "ArrowDown") keys["KeyS"] = false
-            if (e.code === "ArrowLeft") keys["KeyA"] = false
-            if (e.code === "ArrowRight") keys["KeyD"] = false
         }
 
         const onMouseDown = e => {
@@ -253,10 +266,27 @@ class OrbitControls {
         this.update = () => {
             isUpdatingCamera = true
 
-            alpha = lerp(alpha, desiredAlpha, this.dampening)
-            beta = lerp(beta, desiredBeta, this.dampening)
-            radius = lerp(radius, desiredRadius, this.dampening)
+            const dampeningFactor = this.transitionResolver ? 0.04 : this.dampening;
+
+            alpha = lerp(alpha, desiredAlpha, dampeningFactor)
+            beta = lerp(beta, desiredBeta, dampeningFactor)
+            radius = lerp(radius, desiredRadius, dampeningFactor)
             target = target.lerp(desiredTarget, this.dampening)
+
+            if (this.transitionResolver) {
+                const threshold = 0.01;
+                if (
+                    Math.abs(alpha - desiredAlpha) < threshold &&
+                    Math.abs(beta - desiredBeta) < threshold &&
+                    Math.abs(radius - desiredRadius) < threshold
+                ) {
+                    alpha = desiredAlpha;
+                    beta = desiredBeta;
+                    radius = desiredRadius;
+                    this.transitionResolver();
+                    this.transitionResolver = null;
+                }
+            }
 
             const x = target.x + radius * Math.sin(alpha) * Math.cos(beta)
             const y = target.y - radius * Math.sin(beta)
@@ -267,30 +297,6 @@ class OrbitControls {
             const rx = Math.asin(-direction.y)
             const ry = Math.atan2(direction.x, direction.z)
             camera.rotation = Quaternion.FromEuler(new Vector3(rx, ry, 0))
-
-            const moveSpeed = 0.025
-            const rotateSpeed = 0.01
-
-            const R = Matrix3.RotationFromQuaternion(camera.rotation).buffer
-            const forward = new Vector3(-R[2], -R[5], -R[8])
-            const right = new Vector3(R[0], R[3], R[6])
-
-            if (keys["KeyS"])
-                desiredTarget = desiredTarget.add(forward.multiply(moveSpeed))
-            if (keys["KeyW"])
-                desiredTarget = desiredTarget.subtract(forward.multiply(moveSpeed))
-            if (keys["KeyA"])
-                desiredTarget = desiredTarget.subtract(right.multiply(moveSpeed))
-            if (keys["KeyD"])
-                desiredTarget = desiredTarget.add(right.multiply(moveSpeed))
-
-            // Add rotation with 'e' and 'q' for horizontal rotation
-            if (keys["KeyE"]) desiredAlpha += rotateSpeed
-            if (keys["KeyQ"]) desiredAlpha -= rotateSpeed
-
-            // Add rotation with 'r' and 'f' for vertical rotation
-            if (keys["KeyR"]) desiredBeta += rotateSpeed
-            if (keys["KeyF"]) desiredBeta -= rotateSpeed
 
             isUpdatingCamera = false
         }
@@ -313,16 +319,6 @@ class OrbitControls {
             canvas.removeEventListener("touchstart", onTouchStart)
             canvas.removeEventListener("touchend", onTouchEnd)
             canvas.removeEventListener("touchmove", onTouchMove)
-
-            if (enableKeyboardControls) {
-                window.removeEventListener("keydown", onKeyDown)
-                window.removeEventListener("keyup", onKeyUp)
-            }
-        }
-
-        if (enableKeyboardControls) {
-            window.addEventListener("keydown", onKeyDown)
-            window.addEventListener("keyup", onKeyUp)
         }
 
         canvas.addEventListener("dragenter", preventDefault)
