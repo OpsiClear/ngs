@@ -75,9 +75,8 @@ async function loadSplat(viewerId, url) {
     const viewer = viewers[viewerId];
     if (!viewer) return;
 
-    if (viewer.currentSplat) {
-        viewer.scene.remove(viewer.currentSplat);
-    }
+    viewer.scene.reset();
+
 
     try {
         const splat = await SPLAT.PLYLoader.LoadAsync(url, viewer.scene);
