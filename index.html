@@ -211,7 +211,7 @@
           <h2 class="title is-3">Abstract</h2>
           <div class="content has-text-justified">
             <p>
-              3D Gaussian Splatting (3DGS) has demonstrated impressive capabilities in 3D reconstruction. However, its α-blending can induce 'false transparency' artifacts, particularly where low point cloud density in sparse or low-texture regions causes foreground objects to appear improperly transparent. This issue stems from an ill-posed optimization. During training, background Gaussians blend with foreground ones, making them difficult to differentiate using only photometric loss, which leads to the observed transparency in these regions. This view-inconsistency issue is hard to detect in static renderings during training and validation, but becomes evident in object-centric reconstruction during interactive rotation. Although other causes of view-inconsistency (e.g., popping artifacts) have been explored recently, false transparency has not been explicitly identified. This paper proposes a novel explanation to the problem and a solution to remedy it by injecting opaque noise Gaussians in the object volume during training. Our strategy, Noise Guided Splatting (NGS), encourages surface Gaussians to adopt higher opacity while minimally modifying the existing splatting process. To quantitatively evaluate the false transparency in static renderings, we propose a transmittance-based metric to characterize the extent of the false transparency problem. We also introduce a customized high-quality object-centric scan dataset exhibiting prominent transparency issues and supplement popular existing datasets (e.g., DTU) with new complementary infill noise specifically designed to evaluate false transparency handling in 3D reconstruction methods. Across various datasets, NGS substantially reduces surface transmittance while maintaining performance on standard rendering metrics (e.g., PSNR), demonstrating its effectiveness.
+              Opaque objects reconstructed by 3D Gaussian Splatting (3DGS) often exhibit a falsely transparent surface. Camera movement in interactive viewing reveals constantly changing internal and background patterns beneath the surface. This issue stems from an ill-posed optimization. During training, background Gaussians blend with foreground ones, making them difficult to differentiate using only photometric loss, which incorrectly leads to the observed transparency in these regions. This view-inconsistency issue is hard to detect in static renderings during training and validation, but becomes evident in object-centric reconstruction during interactive rotation. Although other causes of view-inconsistency (e.g., popping artifacts) have been explored recently, false transparency has not been explicitly identified. In this work, we are the first to identify, characterize, and develop solutions for this "false transparency" artifact, an underreported artifact in 3DGS. Our strategy, Noise Guided Splatting (NGS), encourages surface Gaussians to adopt higher opacity by injecting opaque noise Gaussians in the object volume during training and minimally modifying the existing splatting process. To quantitatively evaluate the false transparency in static renderings, we propose a transmittance-based metric to characterize the extent of the false transparency problem. We also introduce a customized high-quality object-centric scan dataset exhibiting prominent transparency issues and supplement popular existing datasets (e.g., DTU) with new complementary infill noise specifically designed to evaluate false transparency handling in 3D reconstruction methods. Across various datasets, NGS substantially reduces surface transmittance while maintaining performance on standard rendering metrics (e.g., PSNR), demonstrating its effectiveness.
             </p>
           </div>
         </div>
@@ -346,7 +346,7 @@
         </p>
         <div class="table-container">
           <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-            <caption>Average NVS and SOS results on DTU, OmniObject3D and our novel Stone dataset. Metrics denoted by * were acquired when using a green infill, and +&alpha; denotes use of $\mathcal{L}_{a}$.</caption>
+            <caption>Average NVS and SOS results on DTU, OmniObject3D and our novel dataset. Metrics denoted by * were acquired when using a green infill, and +α denotes use of alpha consistency loss.</caption>
             <thead>
               <tr>
                 <th>Dataset</th>
@@ -363,7 +363,7 @@
             <tbody>
               <tr>
                 <td rowspan="5">DTU</td>
-                <td>3DGS</td><td>25.575</td><td>22.967</td><td><strong>0.891</strong></td><td>0.874</td><td>0.180</td><td>0.250</td><td>0.147</td>
+                <td>3DGS</td><td>25.575</td><td>22.967</td><td><strong>0.891</strong></td><td>0.874</td><td><strong>0.180</strong></td><td>0.250</td><td>0.147</td>
               </tr>
               <tr>
                 <td>GOF</td><td><strong>25.648</strong></td><td>21.109</td><td>0.880</td><td>0.816</td><td>0.209</td><td>0.273</td><td>0.179</td>
@@ -372,14 +372,14 @@
                 <td>StopThePop</td><td>22.817</td><td>18.885</td><td>0.852</td><td>0.780</td><td>0.213</td><td>0.315</td><td>0.135</td>
               </tr>
               <tr>
-                <td>GSplat+&alpha;</td><td>24.874</td><td>21.929</td><td>0.883</td><td>0.866</td><td><strong>0.174</strong></td><td>0.237</td><td>0.154</td>
+                <td>GSplat+&alpha;</td><td>25.435</td><td>25.263</td><td>0.884</td><td><strong>0.883</strong></td><td>0.183</td><td><strong>0.186</strong></td><td>0.598</td>
               </tr>
               <tr>
-                <td>NGS</td><td>24.963</td><td><strong>24.961</strong></td><td>0.886</td><td><strong>0.885</strong></td><td><strong>0.174</strong></td><td><strong>0.175</strong></td><td><strong>0.429</strong></td>
+                <td>NGS</td><td>25.428</td><td><strong>25.427</strong></td><td>0.881</td><td>0.881</td><td>0.192</td><td>0.192</td><td><strong>0.749</strong></td>
               </tr>
               <tr>
                 <td rowspan="5">Stone</td>
-                <td>3DGS</td><td><strong>34.610</strong></td><td>27.551</td><td><strong>0.949</strong></td><td>0.909</td><td><strong>0.055</strong></td><td>0.222</td><td>0.140</td>
+                <td>3DGS</td><td><strong>34.610</strong></td><td>27.551</td><td>0.949</td><td>0.909</td><td>0.055</td><td>0.222</td><td>0.140</td>
               </tr>
               <tr>
                 <td>GOF</td><td>31.469</td><td>21.998</td><td>0.893</td><td>0.780</td><td>0.186</td><td>0.324</td><td>0.126</td>
@@ -388,10 +388,10 @@
                 <td>StopThePop</td><td>32.457</td><td>23.047</td><td>0.945</td><td>0.853</td><td>0.078</td><td>0.223</td><td>0.168</td>
               </tr>
               <tr>
-                <td>GSplat+&alpha;</td><td>32.177</td><td>30.176</td><td>0.935</td><td>0.927</td><td>0.140</td><td>0.191</td><td>0.217</td>
+                <td>GSplat+&alpha;</td><td>33.832</td><td>33.823</td><td>0.948</td><td>0.948</td><td>0.062</td><td>0.062</td><td>0.891</td>
               </tr>
               <tr>
-                <td>NGS</td><td>33.531</td><td><strong>33.531</strong></td><td>0.948</td><td><strong>0.948</strong></td><td>0.059</td><td><strong>0.059</strong></td><td><strong>0.936</strong></td>
+                <td>NGS</td><td>34.148</td><td><strong>34.148</strong></td><td><strong>0.951</strong></td><td><strong>0.951</strong></td><td><strong>0.053</strong></td><td><strong>0.053</strong></td><td><strong>0.922</strong></td>
               </tr>
               <tr>
                 <td rowspan="5">OmniObject</td>
@@ -404,10 +404,10 @@
                 <td>StopThePop</td><td>32.274</td><td>25.095</td><td>0.970</td><td><strong>0.900</strong></td><td><strong>0.050</strong></td><td>0.113</td><td>0.265</td>
               </tr>
               <tr>
-                <td>GSplat+&alpha;</td><td>31.617</td><td>30.635</td><td>0.966</td><td>0.961</td><td>0.061</td><td>0.087</td><td>0.323</td>
+                <td>GSplat+&alpha;</td><td>33.575</td><td>33.350</td><td><strong>0.973</strong></td><td><strong>0.972</strong></td><td>0.060</td><td>0.064</td><td>0.642</td>
               </tr>
               <tr>
-                <td>NGS</td><td><strong>32.771</strong></td><td><strong>32.760</strong></td><td><strong>0.974</strong></td><td><strong>0.974</strong></td><td>0.055</td><td><strong>0.056</strong></td><td><strong>0.568</strong></td>
+                <td>NGS</td><td><strong>33.619</strong></td><td><strong>33.578</strong></td><td>0.972</td><td><strong>0.972</strong></td><td>0.060</td><td><strong>0.060</strong></td><td><strong>0.736</strong></td>
               </tr>
             </tbody>
           </table>
@@ -530,22 +530,22 @@
                 <tbody>
                     <tr>
                         <td>Ours</td>
-                        <td>31.442</td>
-                        <td>31.440</td>
-                        <td>0.926</td>
-                        <td>0.926</td>
-                        <td>0.154</td>
-                        <td>0.154</td>
-                        <td>0.968</td>
+                        <td><strong>32.201</strong></td>
+                        <td><strong>32.201</strong></td>
+                        <td><strong>0.934</strong></td>
+                        <td><strong>0.934</strong></td>
+                        <td>0.145</td>
+                        <td>0.145</td>
+                        <td>0.969</td>
                     </tr>
                     <tr>
                         <td>w/o Erosion</td>
-                        <td>29.824</td>
-                        <td>29.824</td>
-                        <td>0.902</td>
-                        <td>0.902</td>
-                        <td>0.238</td>
-                        <td>0.238</td>
+                        <td>30.785</td>
+                        <td>30.785</td>
+                        <td>0.914</td>
+                        <td>0.914</td>
+                        <td>0.225</td>
+                        <td>0.225</td>
                         <td><strong>1.000</strong></td>
                     </tr>
                     <tr>
@@ -565,7 +565,7 @@
                         <td><strong>0.928</strong></td>
                         <td><strong>0.927</strong></td>
                         <td><strong>0.126</strong></td>
-                        <td>0.135</td>
+                        <td><strong>0.135</strong></td>
                         <td>0.379</td>
                     </tr>
                     <tr>
@@ -587,6 +587,16 @@
                         <td>0.136</td>
                         <td>0.139</td>
                         <td>0.467</td>
+                    </tr>
+                    <tr>
+                        <td>w/o Color reset</td>
+                        <td>31.442</td>
+                        <td>31.436</td>
+                        <td>0.926</td>
+                        <td>0.926</td>
+                        <td>0.154</td>
+                        <td>0.154</td>
+                        <td>0.962</td>
                     </tr>
                 </tbody>
             </table>
