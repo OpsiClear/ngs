@@ -414,7 +414,7 @@
         </p>
         <!-- TODO: Replace with an image of Figure 5 or a relevant comparison, placed in ./static/figures/ -->
         <img src="./static/figures/comparison.png" alt="Qualitative Comparison on Stone Dataset (Figure 5 from paper)" style="width:100%; border-radius: 8px; margin-bottom: 1rem; max-width: 800px; display: block; margin-left: auto; margin-right: auto;">
-        <p class="has-text-centered"><em>Comparison based on Figure 5 from paper: Renders with green infill revealing transparency (top) and corresponding transmittance maps (bottom) for (a) 3DGS, (b) MCMC, (c) GOF, (d) StopThePop, and (e) NGS. NGS (e) shows minimal green infill leakage.</em></p>
+        <p class="has-text-centered"><em>Comparison based on Figure 5 from paper: Renders with green infill revealing transparency (top) and corresponding transmittance maps (bottom) for (a) 3DGS, (b) GOF, (c) StopThePop, (d) Gsplat+&alpha;, and (e) NGS. NGS (e) shows minimal green infill leakage.</em></p>
       </div>
     </div>
   </section>
@@ -471,37 +471,81 @@
       <h2 class="title is-3 has-text-centered">Datasets</h2>
       <div class="content has-text-justified">
         <p>
-          We evaluate NGS on publicly available object-centric datasets, DTU and OmniObject3D, and also introduce our new <strong>Stone Dataset</strong> to specifically test scenarios with complex geometry and textures prone to false transparency.
+          We evaluate NGS on publicly available object-centric datasets, DTU and OmniObject3D, and also introduce our new <strong>Stone Dataset</strong> to specifically test scenarios with complex geometry and textures prone to false transparency. Click on the images in the carousel below to see a larger version.
         </p>
         <p>
           This dataset comprises over 100 distinct stone samples. For each sample, we captured 240 images (3000 x 4000 pixels, 16-bit raw Bayer data) from 6 latitudinal and 40 longitudinal angles, covering the entire upper hemisphere. Camera poses were estimated using COLMAP, and high-quality foreground segmentations were produced using MVAnet.
         </p>
         <p>
-          Noise Gaussian infill add-ons were also created for existing datasets like DTU to facilitate benchmarking of false transparency handling. The Stone Dataset and the noise infills will be made publicly available. <!-- TODO: Link to dataset when available via the 'Data' button at the top -->
+          Noise Gaussian infill add-ons were also created for existing datasets like DTU to facilitate benchmarking of false transparency handling. The Stone Dataset and the noise infills will be made publicly available.
         </p>
-        <div class="columns is-multiline is-centered" style="margin-top: 1rem;">
-          <div class="column is-one-third has-text-centered">
-            <!-- TODO: Replace with an image from Fig S1, placed in ./static/figures/ -->
-            <img src="./static/figures/stones_comparisons.jpg" alt="Stone Dataset Examples (from Fig. S1)" style="width:100%; border-radius: 8px;">
-            <p><em>Stone Dataset samples (based on Fig. S1).</em></p>
+        <p>
+          We also introduce our new <strong>Objects Mix Dataset</strong> to specifically test scenarios with complex geometry and textures prone to false transparency.
+        </p>
+        
+        <!-- Carousel for Dataset Images -->
+        <div id="dataset-image-carousel" class="carousel">
+          <div class="carousel-item dataset-carousel-item js-modal-trigger" data-target="modal-dataset-stone">
+            <img src="./static/figures/stones_comparisons.jpg" alt="Stone Dataset Examples (from Fig. S1)">
+            <p class="has-text-centered"><em>Stone Dataset samples (based on Fig. S1).</em></p>
           </div>
-          <div class="column is-one-third has-text-centered">
-            <!-- TODO: Replace with an image from Fig S2, placed in ./static/figures/ -->
-            <img src="./static/figures/dtu_360_comparisons.jpg" alt="DTU Dataset Examples (from Fig. S2)" style="width:100%; border-radius: 8px;">
-            <p><em>DTU samples (based on Fig. S2).</em></p>
+          <div class="carousel-item dataset-carousel-item js-modal-trigger" data-target="modal-dataset-dtu">
+            <img src="./static/figures/dtu_360_comparisons.jpg" alt="DTU Dataset Examples (from Fig. S2)">
+            <p class="has-text-centered"><em>DTU samples (based on Fig. S2).</em></p>
           </div>
-          <div class="column is-one-third has-text-centered">
-            <!-- TODO: Replace with an image from Fig S3, placed in ./static/figures/ -->
-            <img src="./static/figures/omniobject_comparisons.jpg" alt="OmniObject3D Examples (from Fig. S3)" style="width:100%; border-radius: 8px;">
-            <p><em>OmniObject3D samples (based on Fig. S3).</em></p>
+          <div class="carousel-item dataset-carousel-item js-modal-trigger" data-target="modal-dataset-omni">
+            <img src="./static/figures/omniobject_comparisons.jpg" alt="OmniObject3D Examples (from Fig. S3)">
+            <p class="has-text-centered"><em>OmniObject3D samples (based on Fig. S3).</em></p>
+          </div>
+          <div class="carousel-item dataset-carousel-item js-modal-trigger" data-target="modal-dataset-objects">
+            <img src="./static/figures/objects_mix_comparisons.jpg" alt="Objects Examples (from Fig. S4)">
+            <p class="has-text-centered"><em>Objects samples (based on Fig. S4).</em></p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  
+  <!-- Modals for Zoomable Dataset Images -->
+  <div id="modal-dataset-stone" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <p class="image">
+        <img src="./static/figures/stones_comparisons.jpg" alt="Stone Dataset Examples (from Fig. S1)">
+      </p>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+  </div>
 
+  <div id="modal-dataset-dtu" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <p class="image">
+        <img src="./static/figures/dtu_360_comparisons.jpg" alt="DTU Dataset Examples (from Fig. S2)">
+      </p>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+  </div>
+
+  <div id="modal-dataset-omni" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <p class="image">
+        <img src="./static/figures/omniobject_comparisons.jpg" alt="OmniObject3D Examples (from Fig. S3)">
+      </p>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+  </div>
+  <div id="modal-dataset-objects" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <p class="image">
+        <img src="./static/figures/objects_mix_comparisons.jpg" alt="Objects Examples (from Fig. S4)">
+      </p>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+  </div>
+  <!-- END OF MODIFIED SECTION -->
 
   <section class="section" id="BibTeX">
     <div class="container is-max-desktop content">
@@ -512,7 +556,6 @@
     booktitle = {Conference on Neural Information Processing Systems (NeurIPS)},
     year      = {2025}
 }</code></pre>
-      <!-- TODO: Update BibTeX if conference/journal or year changes upon publication. Add arXiv @misc if applicable. -->
       <p><em>Note: Please update the BibTeX entry if conference details (e.g., NeurIPS track, specific proceedings name) or year change upon publication. If you post to arXiv, consider adding an @misc entry for that as well.</em></p>
     </div>
   </section>
@@ -520,12 +563,10 @@
   <footer class="footer">
     <div class="container">
       <div class="content has-text-centered">
-        <!-- TODO: Link to your PDF -->
         <a class="icon-link"
            href="YOUR_ACTUAL_LINK_TO_PAPER.pdf">
            <i class="fas fa-file-pdf"></i>
         </a>
-        <!-- TODO: Link to your GitHub repo -->
         <a class="icon-link" href="YOUR_CODE_REPO_LINK" class="external-link">
           <i class="fab fa-github"></i>
         </a>
@@ -542,11 +583,9 @@
               we just ask that you link back to the original Nerfies page and this adapted template in your footer.
             </p>
             <p>
-              <!-- TODO: Remember to replace or remove the Google Analytics code included in the header of the website. -->
               Please remember to replace or remove the Google Analytics code included in the header of the website.
             </p>
             <p>
-              <!-- TODO: Update funding source/grant number and individuals/groups if applicable. -->
               Acknowledgements: This work was supported by [Funding Source/Grant Number if applicable]. We thank [Individuals/Groups if applicable] for helpful discussions.
             </p>
           </div>
@@ -555,7 +594,7 @@
     </div>
   </footer>
 
-<script src="./static/js/index.js"></script> 
+<script src="./static/js/index.js?v=1.1"></script> 
 <script type="module" src="./static/js/viewer.js"></script>
 
 </body>
