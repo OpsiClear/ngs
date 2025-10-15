@@ -193,7 +193,7 @@
           <div class="content has-text-centered">
             <h2 class="title is-3">False Transparency</h2>
             <p class="content has-text-justified" style="margin-bottom: 1rem;">
-                False transparency is a common issue in 3DGS, where the reconstructed surface appears transparent even though it should be opaque.
+            False transparency is a visual artifact in 3D Gaussian Splatting (3DGS) where solid, opaque objects are incorrectly rendered with a see-through surface. When viewed interactively, this causes distracting, constantly shifting patterns from the object's interior or background to become visible on its surface. This happens because of an ill-posed optimization; the training process can't distinguish between the object's front and back surfaces and incorrectly blends them together.
             </p>
           </div>
           <div class="box" style="height: 500px;">
@@ -244,7 +244,7 @@
             Explore the visual impact of Noise Guided Splatting (NGS). The 2x2 grid below shows:
             Top-left: Standard <strong>3DGS</strong> (no infill). Top-right: <strong>3DGS with green infill</strong> to reveal false transparency.
             Bottom-left: Our <strong>NGS result (no infill)</strong>. Bottom-right: Our <strong>NGS result with green infill</strong>, showing reduced transparency.
-            Use the thumbnails to switch between different models.
+            Note that false transparency is a distinct issue from other view-inconsistency problems like "popping artifacts," which are caused by sorting errors and are not the focus of this work.
           </p>
           <!-- Main 2x2 3D viewers -->
           <div class="columns is-multiline is-vcentered" style="margin-bottom: 2rem;">
@@ -312,10 +312,8 @@
 
   <section class="section">
     <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column">
+        <h2 class="title is-3 has-text-centered">Method: Noise Guided Splatting (NGS)</h2>
           <div class="content">
-            <h2 class="title is-3">Methodology: Noise Guided Splatting (NGS)</h2>
             <!-- TODO: Ensure 'summary.png' is Figure 1 from your paper and placed in ./static/figures/ -->
             <img src="./static/figures/summary.png" alt="Overview of the NGS method (Figure 1 from paper)" class="interpolation-image" style="width:100%; border-radius: 8px; margin-bottom: 1rem;">
             <p class="has-text-justified">
@@ -340,13 +338,12 @@
     <div class="container is-max-desktop">
       <h2 class="title is-3 has-text-centered">Quantitative & Qualitative Results</h2>
       <div class="content">
-        <h3 class="title is-4">Quantitative Evaluation</h3>
-        <p class="has-text-justified">
-          NGS substantially reduces surface transmittance while maintaining or improving performance on standard rendering metrics (PSNR, SSIM, LPIPS). We introduce the Surface Opacity Score (SOS), where a higher score (closer to 1) indicates better opacity. As shown in Table 1, NGS achieves significantly higher SOS values across the DTU, Stone, and OmniObject3D datasets compared to baseline 3DGS and other methods. When infill is used for evaluation (metrics with *), NGS maintains high PSNR*, SSIM*, and LPIPS* scores, indicating the infill does not leak through, unlike in baseline methods where these scores degrade.
-        </p>
         <div class="table-container">
           <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-            <caption>Average NVS and SOS results on DTU, OmniObject3D and our novel dataset. Metrics denoted by * were acquired when using a green infill, and +α denotes use of alpha consistency loss.</caption>
+            <caption>Average NVS and SOS results on DTU, OmniObject3D and our novel dataset. 
+              Metrics denoted by * were acquired when using a green infill, and +α denotes use of alpha consistency loss.
+              NGS shows strong improvements in SOS and infill-conditioned metrics.
+            </caption>
             <thead>
               <tr>
                 <th>Dataset</th>
@@ -412,55 +409,19 @@
             </tbody>
           </table>
         </div>
-        <p class="has-text-centered"><em>Table 1: Average NVS and SOS results. NGS shows strong improvements in SOS and infill-conditioned metrics (*).</em></p>
-
-        <h3 class="title is-4" style="margin-top: 2rem;">Qualitative Comparison</h3>
         <p class="has-text-justified">
           Visual comparisons highlight the effectiveness of NGS. Below, on our Stone dataset (Figure 5 from paper), green infill is used to reveal transparency. Baseline methods (a-d) show significant green leakage, indicating false transparency. Our NGS method (e) results in a much more opaque surface.
         </p>
         <!-- TODO: Replace with an image of Figure 5 or a relevant comparison, placed in ./static/figures/ -->
         <img src="./static/figures/comparison.png" alt="Qualitative Comparison on Stone Dataset (Figure 5 from paper)" style="width:100%; border-radius: 8px; margin-bottom: 1rem; max-width: 800px; display: block; margin-left: auto; margin-right: auto;">
         <p class="has-text-centered"><em>Comparison based on Figure 5 from paper: Renders with green infill revealing transparency (top) and corresponding transmittance maps (bottom) for (a) 3DGS, (b) MCMC, (c) GOF, (d) StopThePop, and (e) NGS. NGS (e) shows minimal green infill leakage.</em></p>
-        <p class="has-text-justified">
-          Similar improvements in reducing false transparency are observed on the DTU (see Figure S4 in paper appendix) and OmniObject3D (see Figure S5 in paper appendix) datasets.
-        </p>
       </div>
     </div>
   </section>
 
   <section class="section">
     <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Datasets</h2>
-      <div class="content has-text-justified">
-        <p>
-          We evaluate NGS on publicly available object-centric datasets, DTU and OmniObject3D, and also introduce our new <strong>Stone Dataset</strong> to specifically test scenarios with complex geometry and textures prone to false transparency.
-        </p>
-        <h4 class="title is-5">Stone Dataset</h4>
-        <p>
-          This dataset comprises over 100 distinct stone samples. For each sample, we captured 240 images ($3000 \times 4000$ pixels, 16-bit raw Bayer data) from 6 latitudinal and 40 longitudinal angles, covering the entire upper hemisphere. Camera poses were estimated using COLMAP, and high-quality foreground segmentations were produced using MVAnet.
-        </p>
-        <p>
-          Noise Gaussian infill add-ons were also created for existing datasets like DTU to facilitate benchmarking of false transparency handling. The Stone Dataset and the noise infills will be made publicly available. <!-- TODO: Link to dataset when available via the 'Data' button at the top -->
-        </p>
-        <div class="columns is-multiline is-centered" style="margin-top: 1rem;">
-          <div class="column is-one-third has-text-centered">
-            <!-- TODO: Replace with an image from Fig S1, placed in ./static/figures/ -->
-            <img src="./static/figures/stones_comparisons.jpg" alt="Stone Dataset Examples (from Fig. S1)" style="width:100%; border-radius: 8px;">
-            <p><em>Stone Dataset samples (based on Fig. S1).</em></p>
-          </div>
-          <div class="column is-one-third has-text-centered">
-            <!-- TODO: Replace with an image from Fig S2, placed in ./static/figures/ -->
-            <img src="./static/figures/dtu_360_comparisons.jpg" alt="DTU Dataset Examples (from Fig. S2)" style="width:100%; border-radius: 8px;">
-            <p><em>DTU samples (based on Fig. S2).</em></p>
-          </div>
-          <div class="column is-one-third has-text-centered">
-            <!-- TODO: Replace with an image from Fig S3, placed in ./static/figures/ -->
-            <img src="./static/figures/omniobject_comparisons.jpg" alt="OmniObject3D Examples (from Fig. S3)" style="width:100%; border-radius: 8px;">
-            <p><em>OmniObject3D samples (based on Fig. S3).</em></p>
-          </div>
-        </div>
-
-        <h3 class="title is-4 has-text-centered" style="margin-top: 3rem;">Noise Infill Visualization</h3>
+      <h2 class="title is-3 has-text-centered">Noise Infill Visualization</h2>
         <p class="content has-text-justified" style="margin-bottom: 1rem;">
             The viewer below allows you to inspect the standalone noise infill generated by our NGS method for each model. This is the colored noise that helps enforce opacity and can be used as a diagnostic tool. Use the thumbnails to select a model.
         </p>
@@ -507,105 +468,40 @@
 
   <section class="section">
     <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Ablation Study</h2>
-      <div class="content">
-        <p class="has-text-justified">
-          We conducted ablation experiments using our Stone dataset to isolate the effects of individual design choices in NGS on both rendering quality and transparency reduction. Key components like resetting the learning rate for Gaussian means after noise introduction and the foreground opacity loss ($\mathcal{L}_f$) proved particularly crucial for the method's effectiveness.
+      <h2 class="title is-3 has-text-centered">Datasets</h2>
+      <div class="content has-text-justified">
+        <p>
+          We evaluate NGS on publicly available object-centric datasets, DTU and OmniObject3D, and also introduce our new <strong>Stone Dataset</strong> to specifically test scenarios with complex geometry and textures prone to false transparency.
         </p>
-        <div class="table-container">
-            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-                <caption>Mean NVS and SOS scores over the Stone Dataset from ablation studies. Metrics denoted by * were acquired when using an infill.</caption>
-                <thead>
-                    <tr>
-                        <th>Method</th>
-                        <th>PSNR&uarr;</th>
-                        <th>PSNR*&uarr;</th>
-                        <th>SSIM&uarr;</th>
-                        <th>SSIM*&uarr;</th>
-                        <th>LPIPS&darr;</th>
-                        <th>LPIPS*&darr;</th>
-                        <th>SOS&uarr;</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Ours</td>
-                        <td><strong>32.201</strong></td>
-                        <td><strong>32.201</strong></td>
-                        <td><strong>0.934</strong></td>
-                        <td><strong>0.934</strong></td>
-                        <td>0.145</td>
-                        <td>0.145</td>
-                        <td>0.969</td>
-                    </tr>
-                    <tr>
-                        <td>w/o Erosion</td>
-                        <td>30.785</td>
-                        <td>30.785</td>
-                        <td>0.914</td>
-                        <td>0.914</td>
-                        <td>0.225</td>
-                        <td>0.225</td>
-                        <td><strong>1.000</strong></td>
-                    </tr>
-                    <tr>
-                        <td>w/o Pruning</td>
-                        <td>31.496</td>
-                        <td>31.489</td>
-                        <td>0.927</td>
-                        <td>0.927</td>
-                        <td>0.151</td>
-                        <td>0.151</td>
-                        <td>0.952</td>
-                    </tr>
-                    <tr>
-                        <td>w/o $\mathcal{L}_f$</td> <!-- Representing L_f -->
-                        <td>31.252</td>
-                        <td>30.930</td>
-                        <td><strong>0.928</strong></td>
-                        <td><strong>0.927</strong></td>
-                        <td><strong>0.126</strong></td>
-                        <td><strong>0.135</strong></td>
-                        <td>0.379</td>
-                    </tr>
-                    <tr>
-                        <td>w/o LR reset</td>
-                        <td>26.136</td>
-                        <td>26.133</td>
-                        <td>0.830</td>
-                        <td>0.830</td>
-                        <td>0.416</td>
-                        <td>0.416</td>
-                        <td>0.545</td>
-                    </tr>
-                    <tr>
-                        <td>Random Bg</td>
-                        <td>30.205</td>
-                        <td>30.149</td>
-                        <td>0.923</td>
-                        <td>0.923</td>
-                        <td>0.136</td>
-                        <td>0.139</td>
-                        <td>0.467</td>
-                    </tr>
-                    <tr>
-                        <td>w/o Color reset</td>
-                        <td>31.442</td>
-                        <td>31.436</td>
-                        <td>0.926</td>
-                        <td>0.926</td>
-                        <td>0.154</td>
-                        <td>0.154</td>
-                        <td>0.962</td>
-                    </tr>
-                </tbody>
-            </table>
+        <p>
+          This dataset comprises over 100 distinct stone samples. For each sample, we captured 240 images (3000 x 4000 pixels, 16-bit raw Bayer data) from 6 latitudinal and 40 longitudinal angles, covering the entire upper hemisphere. Camera poses were estimated using COLMAP, and high-quality foreground segmentations were produced using MVAnet.
+        </p>
+        <p>
+          Noise Gaussian infill add-ons were also created for existing datasets like DTU to facilitate benchmarking of false transparency handling. The Stone Dataset and the noise infills will be made publicly available. <!-- TODO: Link to dataset when available via the 'Data' button at the top -->
+        </p>
+        <div class="columns is-multiline is-centered" style="margin-top: 1rem;">
+          <div class="column is-one-third has-text-centered">
+            <!-- TODO: Replace with an image from Fig S1, placed in ./static/figures/ -->
+            <img src="./static/figures/stones_comparisons.jpg" alt="Stone Dataset Examples (from Fig. S1)" style="width:100%; border-radius: 8px;">
+            <p><em>Stone Dataset samples (based on Fig. S1).</em></p>
+          </div>
+          <div class="column is-one-third has-text-centered">
+            <!-- TODO: Replace with an image from Fig S2, placed in ./static/figures/ -->
+            <img src="./static/figures/dtu_360_comparisons.jpg" alt="DTU Dataset Examples (from Fig. S2)" style="width:100%; border-radius: 8px;">
+            <p><em>DTU samples (based on Fig. S2).</em></p>
+          </div>
+          <div class="column is-one-third has-text-centered">
+            <!-- TODO: Replace with an image from Fig S3, placed in ./static/figures/ -->
+            <img src="./static/figures/omniobject_comparisons.jpg" alt="OmniObject3D Examples (from Fig. S3)" style="width:100%; border-radius: 8px;">
+            <p><em>OmniObject3D samples (based on Fig. S3).</em></p>
+          </div>
         </div>
-        <p class="has-text-centered"><em>Table 2: Ablation study results on the Stone Dataset. The current NGS configuration achieves an optimal balance.</em></p>
-
       </div>
     </div>
   </section>
+
+  
+
 
   <section class="section" id="BibTeX">
     <div class="container is-max-desktop content">
