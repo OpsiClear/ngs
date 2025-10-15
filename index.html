@@ -326,7 +326,9 @@
               (f) In contrast, the recolored infill does not leak through the surface of an NGS-trained model, demonstrating its improved opacity.
             </p>
              <p class="has-text-justified">
-              NGS addresses the false transparency by strategically placing these noise Gaussians within the object volume. This obstructs direct lines of sight between front and back surfaces, forcing the optimization to prioritize foreground surface reconstruction and achieve higher opacity. The method is designed as a plug-and-play add-on, requiring minimal modifications to existing 3DGS frameworks, primarily the introduction of noise Gaussians and an alpha consistency loss ($\mathcal{L}_a$). The noise initialization involves computing a convex hull from existing Gaussian primitives to approximate the object's volume, converting it to a coarse occupancy grid, and then populating it with multi-scale noise Gaussians.
+              NGS addresses the false transparency by strategically placing these noise Gaussians within the object volume. This obstructs direct lines of sight between front and back surfaces, forcing the optimization to prioritize foreground surface reconstruction and achieve higher opacity. 
+              The method is designed as a plug-and-play add-on, requiring minimal modifications to existing 3DGS frameworks, primarily the introduction of noise Gaussians and an alpha consistency loss (<b>L<sub>a</sub></b>). 
+              The noise initialization involves computing a convex hull from existing Gaussian primitives to approximate the object's volume, converting it to a coarse occupancy grid, and then populating it with multi-scale noise Gaussians.
             </p>
           </div>
         </div>
@@ -502,6 +504,7 @@
             <p class="has-text-centered"><em>Objects samples (based on Fig. S4).</em></p>
           </div>
         </div>
+
       </div>
     </div>
   </section>

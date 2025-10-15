@@ -46,7 +46,7 @@ $(document).ready(function() {
     // Options for the new Dataset image carousel
     var datasetCarouselOptions = {
       slidesToScroll: 1,
-      slidesToShow: 3, // Show 3 images to allow for scrolling
+      slidesToShow: 1, // Show 1 image at a time
       loop: true,
       infinite: true,
       autoplay: false,
