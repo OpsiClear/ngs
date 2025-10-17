@@ -121,7 +121,6 @@
               <span class="author-block">
                 <a href="https://yin-yu.github.io/">Yu Yin</a><sup>2</sup>,</span>
               <span class="author-block">
-                <!-- TODO: Confirm Michael Jenkins' link if available, used mailto as placeholder -->
                 <a href="https://www.jenkinslab.com/">Michael Jenkins</a><sup>1,2</sup>,</span>
               <span class="author-block">
                 <a href="https://www.yeheliu.info/">Yehe Liu</a><sup>1,2</sup></span>
@@ -163,16 +162,14 @@
                   </a>
                 </span>
                 <span class="link-block">
-                  <!-- TODO: Link to your code repository -->
-                  <a href="YOUR_CODE_REPO_LINK"
+                  <a href="https://github.com/OpsiClear/noise_guided_splatting"
                      class="external-link button is-normal is-rounded is-dark">
                     <span class="icon"><i class="fab fa-github"></i></span>
                     <span>Code</span>
                   </a>
                 </span>
                 <span class="link-block">
-                  <!-- TODO: Link to your dataset -->
-                  <a href="YOUR_DATASET_LINK"
+                  <a href="https://huggingface.co/datasets/OpsiClear/NGS"
                      class="external-link button is-normal is-rounded is-dark">
                     <span class="icon"><i class="far fa-images"></i></span>
                     <span>Data</span>
@@ -277,8 +274,6 @@
           </div>
 
           <!-- Thumbnail carousel for the 2x2 viewer -->
-          <!-- TODO: Update onclick to load_correct_FOUR_HTML files for the 2x2 viewers -->
-          <!-- TODO: Update img src to actual thumbnail images -->
           <div id="comparison-thumbnail-carousel" class="carousel">
             <div class="carousel-item thumbnail-box" data-model="stone_1" onclick="updateComparisonViewers('stone_1')">
               <img src="./static/thumbnails/stone_1.png" alt="Stone 1 Comparison Set">
@@ -314,7 +309,6 @@
     <div class="container is-max-desktop">
         <h2 class="title is-3 has-text-centered">Method: Noise Guided Splatting (NGS)</h2>
           <div class="content">
-            <!-- TODO: Ensure 'summary.png' is Figure 1 from your paper and placed in ./static/figures/ -->
             <img src="./static/figures/summary.png" alt="Overview of the NGS method (Figure 1 from paper)" class="interpolation-image" style="width:100%; border-radius: 8px; margin-bottom: 1rem;">
             <p class="has-text-justified">
               Overview of NGS (Noise Guided Splatting).
@@ -414,7 +408,6 @@
         <p class="has-text-justified">
           Visual comparisons highlight the effectiveness of NGS. Below, on our Stone dataset (Figure 5 from paper), green infill is used to reveal transparency. Baseline methods (a-d) show significant green leakage, indicating false transparency. Our NGS method (e) results in a much more opaque surface.
         </p>
-        <!-- TODO: Replace with an image of Figure 5 or a relevant comparison, placed in ./static/figures/ -->
         <img src="./static/figures/comparison.png" alt="Qualitative Comparison on Stone Dataset (Figure 5 from paper)" style="width:100%; border-radius: 8px; margin-bottom: 1rem; max-width: 800px; display: block; margin-left: auto; margin-right: auto;">
         <p class="has-text-centered"><em>Comparison based on Figure 5 from paper: Renders with green infill revealing transparency (top) and corresponding transmittance maps (bottom) for (a) 3DGS, (b) GOF, (c) StopThePop, (d) Gsplat+&alpha;, and (e) NGS. NGS (e) shows minimal green infill leakage.</em></p>
       </div>
@@ -430,14 +423,11 @@
         <div class="columns is-centered">
             <div class="column is-10"> <!-- Wider column for single viewer -->
                 <div class="box" style="height: 400px;">
-                    <!-- TODO: Update src for the initial noise infill model -->
                     <canvas id="infill-viewer-main" style="width: 100%; height: 100%;"></canvas>
                 </div>
             </div>
         </div>
         <!-- Thumbnail carousel for the noise infill viewer -->
-        <!-- TODO: Update onclick to load_correct_SINGLE_HTML file for the noise infill viewer -->
-        <!-- TODO: Update img src to actual thumbnail images -->
         <div id="infill-thumbnail-carousel" class="carousel">
             <div class="carousel-item thumbnail-box" data-model="stone_1" onclick="updateInfillViewer('stone_1')">
               <img src="./static/thumbnails/stone_1.png" alt="Stone 1 Noise Infill">
@@ -562,7 +552,7 @@
       <p><em>Note: Please update the BibTeX entry if conference details (e.g., NeurIPS track, specific proceedings name) or year change upon publication. If you post to arXiv, consider adding an @misc entry for that as well.</em></p>
     </div>
   </section>
-
+<!-- TODO: Update the links to the paper and code repository -->
   <footer class="footer">
     <div class="container">
       <div class="content has-text-centered">
@@ -570,7 +560,7 @@
            href="YOUR_ACTUAL_LINK_TO_PAPER.pdf">
            <i class="fas fa-file-pdf"></i>
         </a>
-        <a class="icon-link" href="YOUR_CODE_REPO_LINK" class="external-link">
+        <a class="icon-link" href="https://github.com/OpsiClear/noise_guided_splatting" class="external-link">
           <i class="fab fa-github"></i>
         </a>
       </div>
