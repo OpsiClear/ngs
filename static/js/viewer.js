@@ -89,6 +89,9 @@ async function loadSplat(viewerId, url) {
     }
 }
 
+let isComparisonLoading = false;
+let isInfillLoading = false;
+
 document.addEventListener('DOMContentLoaded', async () => {
     setupViewer('main-viewer-1');
     setupViewer('main-viewer-2');
@@ -121,27 +124,45 @@ document.addEventListener('carouselsReady', () => {
 });
 
 window.updateComparisonViewers = async (modelName) => {
-    const basePath = './static/splats/';
+    if (isComparisonLoading) return;
+    isComparisonLoading = true;
+
     const viewersToUpdate = ['main-viewer-1', 'main-viewer-2', 'main-viewer-3', 'main-viewer-4'];
-    
-    const loadPromises = [
-        loadSplat('main-viewer-1', `${basePath}${modelName}_3dgs.ply`),
-        loadSplat('main-viewer-2', `${basePath}${modelName}_3dgs_infill.ply`),
-        loadSplat('main-viewer-3', `${basePath}${modelName}_ngs.ply`),
-        loadSplat('main-viewer-4', `${basePath}${modelName}_ngs_infill.ply`)
-    ];
+    viewersToUpdate.forEach(id => document.getElementById(`${id}-loading`)?.classList.add('is-active'));
 
-    await Promise.all(loadPromises);
+    try {
+        const basePath = './static/splats/';
+        const loadPromises = [
+            loadSplat('main-viewer-1', `${basePath}${modelName}_3dgs.ply`),
+            loadSplat('main-viewer-2', `${basePath}${modelName}_3dgs_infill.ply`),
+            loadSplat('main-viewer-3', `${basePath}${modelName}_ngs.ply`),
+            loadSplat('main-viewer-4', `${basePath}${modelName}_ngs_infill.ply`)
+        ];
+        await Promise.all(loadPromises);
 
-    const posePromises = viewersToUpdate.map(viewerId => 
-        viewers[viewerId].controls.setPose(0.0, 0.2, 1.0, true)
-    );
-    
-    await Promise.all(posePromises);
+        const posePromises = viewersToUpdate.map(viewerId => 
+            viewers[viewerId].controls.setPose(0.0, 0.2, 1.0, true)
+        );
+        await Promise.all(posePromises);
+    } finally {
+        isComparisonLoading = false;
+        viewersToUpdate.forEach(id => document.getElementById(`${id}-loading`)?.classList.remove('is-active'));
+    }
 };
 
 window.updateInfillViewer = async (modelName) => {
-    const basePath = './static/splats/';
-    await loadSplat('infill-viewer-main', `${basePath}${modelName}_noise.ply`);
-    await viewers['infill-viewer-main'].controls.setPose(0.0, 0.2, 1.0, true);
+    if (isInfillLoading) return;
+    isInfillLoading = true;
+
+    const viewerId = 'infill-viewer-main';
+    document.getElementById(`${viewerId}-loading`)?.classList.add('is-active');
+
+    try {
+        const basePath = './static/splats/';
+        await loadSplat(viewerId, `${basePath}${modelName}_noise.ply`);
+        await viewers[viewerId].controls.setPose(0.0, 0.2, 1.0, true);
+    } finally {
+        isInfillLoading = false;
+        document.getElementById(`${viewerId}-loading`)?.classList.remove('is-active');
+    }
 };

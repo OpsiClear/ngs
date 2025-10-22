@@ -99,9 +99,44 @@
       box-shadow: none;
       padding: 0;
       border-radius: 0;
+      position: relative; /* Needed for loading overlay */
     }
     canvas {
       background-color: #ffffff;
+    }
+    /* Loading Spinner Styles */
+    .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+        pointer-events: none;
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    }
+    .loading-overlay.is-active {
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .loader {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -192,6 +227,7 @@
             </p>
           </div>
           <div class="box" style="height: 500px;">
+            <div id="teaser-viewer-loading" class="loading-overlay"><div class="loader"></div></div>
             <canvas id="teaser-viewer" style="width: 100%; height: 100%;"></canvas>
           </div>
         </div>
@@ -213,7 +249,7 @@
               blended via &alpha;-compositing and optimized solely against the input RGB images
               using a photometric loss. As this process lacks an explicit constraint on surface
               opacity, the optimization may incorrectly assign transparency to opaque regions,
-              resulting in view-inconsistent and falsely transparent. This issue is difficult to
+              resulting in view-inconsistent and falsely transparent output. This issue is difficult to
               detect in standard evaluation settings (i.e., rendering static images) but becomes
               particularly evident in object-centric reconstructions under interactive viewing.
               Although other causes of view-inconsistency (e.g., popping artifacts) have been
@@ -264,6 +300,7 @@
             Explore the visual impact of Noise Guided Splatting (NGS). The 2x2 grid below shows:
             Top-left: Standard <strong>3DGS</strong> (no infill). Top-right: <strong>3DGS with green infill</strong> to reveal false transparency.
             Bottom-left: Our <strong>NGS result (no infill)</strong>. Bottom-right: Our <strong>NGS result with green infill</strong>, showing reduced transparency.
+            Use the carousel to choose an item below.
             Note that false transparency is a distinct issue from other view-inconsistency problems like "popping artifacts," which are caused by sorting errors and are not the focus of this work.
           </p>
           <!-- Main 2x2 3D viewers -->
@@ -272,12 +309,14 @@
             <div class="column is-6">
               <div class="content has-text-centered"><p><strong>3DGS (No Infill)</strong></p></div>
               <div class="box" style="height: 300px;">
+                <div id="main-viewer-1-loading" class="loading-overlay"><div class="loader"></div></div>
                 <canvas id="main-viewer-1" style="width: 100%; height: 100%;"></canvas>
               </div>
             </div>
             <div class="column is-6">
               <div class="content has-text-centered"><p><strong>3DGS (With Green Infill)</strong></p></div>
               <div class="box" style="height: 300px;">
+                <div id="main-viewer-2-loading" class="loading-overlay"><div class="loader"></div></div>
                 <canvas id="main-viewer-2" style="width: 100%; height: 100%;"></canvas>
               </div>
             </div>
@@ -285,12 +324,14 @@
             <div class="column is-6">
               <div class="content has-text-centered"><p><strong>Ours (NGS, No Infill)</strong></p></div>
               <div class="box" style="height: 300px;">
+                <div id="main-viewer-3-loading" class="loading-overlay"><div class="loader"></div></div>
                 <canvas id="main-viewer-3" style="width: 100%; height: 100%;"></canvas>
               </div>
             </div>
             <div class="column is-6">
               <div class="content has-text-centered"><p><strong>Ours (NGS, With Green Infill)</strong></p></div>
               <div class="box" style="height: 300px;">
+                <div id="main-viewer-4-loading" class="loading-overlay"><div class="loader"></div></div>
                 <canvas id="main-viewer-4" style="width: 100%; height: 100%;"></canvas>
               </div>
             </div>
@@ -359,7 +400,7 @@
       <div class="content">
         <div class="table-container">
           <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-            <caption>Average NVS and SOS results on DTU, OmniObject3D and our novel dataset. 
+            <caption>Average Peak Signal to Noise Ratio (PSNR), Structure Similarity Index Measurement (SSIM), Learned Perceptual Image Patch Similarity (LPIPS) and Surface Opacity Score (SOS) results on DTU, OmniObject3D and our novel dataset. 
               Metrics denoted by * were acquired when using a green infill, and +&alpha; denotes use of alpha consistency loss.
               NGS shows strong improvements in SOS and infill-conditioned metrics.
             </caption>
@@ -441,11 +482,12 @@
     <div class="container is-max-desktop">
       <h2 class="title is-3 has-text-centered">Noise Infill Visualization</h2>
         <p class="content has-text-justified" style="margin-bottom: 1rem;">
-            The viewer below allows you to inspect the standalone noise infill generated by our NGS method for each model. This is the colored noise that helps enforce opacity and can be used as a diagnostic tool. Use the thumbnails to select a model.
+            The viewer below allows you to inspect the standalone noise infill generated by our NGS method for each model. This is the colored noise that helps enforce opacity and can be used as a diagnostic tool. Use the carousel to choose an item below.
         </p>
         <div class="columns is-centered">
             <div class="column is-10"> <!-- Wider column for single viewer -->
                 <div class="box" style="height: 400px;">
+                    <div id="infill-viewer-main-loading" class="loading-overlay"><div class="loader"></div></div>
                     <canvas id="infill-viewer-main" style="width: 100%; height: 100%;"></canvas>
                 </div>
             </div>
@@ -486,7 +528,7 @@
       <h2 class="title is-3 has-text-centered">Datasets</h2>
       <div class="content has-text-justified">
         <p>
-          We evaluate NGS on publicly available object-centric datasets, DTU and OmniObject3D, and also introduce our new <strong>Stone Dataset</strong> to specifically test scenarios with complex geometry and textures prone to false transparency. Click on the images in the carousel below to see a larger version.
+          We evaluate NGS on publicly available object-centric datasets, DTU and OmniObject3D, and also introduce our new <strong>Stone Dataset</strong> to specifically test scenarios with complex geometry and textures prone to false transparency. Use the carousel to choose an item below. Click on the images in the carousel below to see a larger version.
         </p>
         <p>
           This dataset comprises over 100 distinct stone samples. For each sample, we captured 240 images (3000 x 4000 pixels, 16-bit raw Bayer data) from 6 latitudinal and 40 longitudinal angles, covering the entire upper hemisphere. Camera poses were estimated using COLMAP, and high-quality foreground segmentations were produced using MVAnet.
