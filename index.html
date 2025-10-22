@@ -245,7 +245,7 @@
               Opaque objects reconstructed by 3D Gaussian Splatting (3DGS) often exhibit a
               falsely transparent surface, leading to inconsistent background and internal patterns
               under camera motion in interactive viewing. This issue stems from the ill-posed
-              optimization in 3DGS . During training, background and foreground Gaussians are
+              optimization in 3DGS. During training, background and foreground Gaussians are
               blended via &alpha;-compositing and optimized solely against the input RGB images
               using a photometric loss. As this process lacks an explicit constraint on surface
               opacity, the optimization may incorrectly assign transparency to opaque regions,
@@ -254,9 +254,9 @@
               particularly evident in object-centric reconstructions under interactive viewing.
               Although other causes of view-inconsistency (e.g., popping artifacts) have been
               explored recently, false transparency has not been explicitly identified. To the
-              best of our knowledge, we are the first to identify, characterize, and develop
-              solutions for this "false transparency" artifact, an underreported artifact in 3DGS .
-              Our strategy, Noise Guided Splatting ( NGS), encourages surface Gaussians to
+              best of our knowledge, we are the first to quantify, characterize, and develop
+              solutions for this "false transparency" artifact, an underreported artifact in 3DGS.
+              Our strategy, Noise Guided Splatting (NGS), encourages surface Gaussians to
               adopt higher opacity by injecting opaque noise Gaussians in the object volume
               during training, requiring only minimal modifications to the existing splatting
               process. To quantitatively evaluate false transparency in static renderings, we
